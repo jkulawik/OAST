@@ -23,3 +23,9 @@ def generate_chromosome(list_of_demands):
 
     chromosome = Chromosome(list_of_genes, 0, 0)  # TODO: implement, calculate and pass fitness
     return chromosome
+
+
+# Check if given link is in a given demand path
+def check_link_in_demand(link, demand, path_num):
+    demand_path = demand.list_of_demand_paths[path_num]
+    return str(link) in demand_path.link_id_list

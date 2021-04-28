@@ -72,10 +72,4 @@ class Chromosome:
         self.list_of_genes = list_of_genes  # as list of Int
         self.fitness_dap = fitness_dap  # int
         self.fitness_ddap = fitness_ddap  # int
-
-    # Fitness function = the objective function
-    def calc_fitness_dap(self):
-        pass
-
-    def calc_fitness_ddap(self):
-        pass
+        # Fitness function = the objective function
