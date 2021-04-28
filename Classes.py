@@ -60,7 +60,7 @@ class Gene:
 
     def __init__(self, path_flow_list, demand_volume):
         self.path_flow_list = path_flow_list  # list of int
-        # Sum of all values on list of alleles should be the same as demand_volume
+        # Sum of all values on list of path flows should be the same as demand_volume
         self.demand_volume = demand_volume  # int
 
 
@@ -70,6 +70,6 @@ class Chromosome:
 
     def __init__(self, list_of_genes, fitness_dap, fitness_ddap):
         self.list_of_genes = list_of_genes  # as list of Int
-        self.fitness_dap = fitness_dap  # int
-        self.fitness_ddap = fitness_ddap  # int
+        self.fitness_dap = fitness_dap  # int; biggest link overload
+        self.fitness_ddap = fitness_ddap  # int; sum of link costs
         # Fitness function = the objective function
