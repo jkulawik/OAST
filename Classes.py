@@ -73,6 +73,3 @@ class Chromosome:
         self.fitness_dap = fitness_dap  # int; biggest link overload
         self.fitness_ddap = fitness_ddap  # int; sum of link costs
         # Fitness function = the objective function
-
-    def get_random_probability(self, probability):
-        return random.random() < probability
