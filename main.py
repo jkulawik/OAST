@@ -2,7 +2,7 @@
 import oast_parser
 
 oast_parser.get_links()
-#oast_parser.get_demands()
+oast_parser.get_demands()
 
 # DAP: find allocation of path flows that minimizes the max load function.
 # link capacity = link module * number of modules
