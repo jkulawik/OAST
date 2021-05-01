@@ -1,9 +1,9 @@
 from Classes import Link, Demand, DemandPath
 
-network_file = "net12_1.txt"
+#network_file = "net12_1.txt"
 
 
-def get_links():
+def get_links(network_file):
     links = list()
     file = open(network_file, "r")
 
@@ -30,7 +30,7 @@ def get_links():
     return links
 
 
-def get_demands():
+def get_demands(network_file):
     demands = list()
     file = open(network_file, "r")
     # Same as with get_links but we do it to skip that part of the file

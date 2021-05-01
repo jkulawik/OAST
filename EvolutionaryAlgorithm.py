@@ -33,9 +33,17 @@ def generate_chromosome(list_of_demands):
     chromosome = Chromosome(list_of_genes, 0, 0)  # Fitness is updated manually in the main script
     return chromosome
 
+def generate_first_population(list_of_demands, population_size):
 
-# Mutation perturbs the values of the chromosome genes,
-# with a certain low probability
+    first_population_list = list()
+
+    for i in range(population_size):
+        first_population_list.append(generate_chromosome(list_of_demands))
+
+    return first_population_list
+
+
+# Mutation perturbs the values of the chromosome genes with a certain low probability
 def mutate_chromosome(chromosome, mutation_probability):
 
     # Check if possibility is in range between 0 and 1
@@ -69,8 +77,7 @@ def mutate_chromosome(chromosome, mutation_probability):
         else:
             return False
 
-# Crossover exchanges genes between two parent
-# chromosomes to produce two offspring
+# Crossover exchanges genes between two parent chromosomes to produce two offspring
 def crossover_chromosomes(chromosomes_list, crossover_probability):
 
     # Firstly, list is filled with parent chromosomes

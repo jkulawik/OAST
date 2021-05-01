@@ -2,8 +2,6 @@ import oast_parser
 import random
 import time
 
-#oast_parser.get_links()
-#oast_parser.get_demands()
 
 # DAP: find allocation of path flows that minimizes the max load function.
 # link capacity = link module * number of modules
@@ -26,6 +24,8 @@ not_improved_in_N_generations = 0
 
 network = ''
 
+'''
+# Input phase
 while True:
     net_input = input("[1] net4.txt\n"
                       "[2] net12_1.txt\n"
@@ -69,6 +69,17 @@ while True:
         break
     else:
         print("You have to choose number 1-4!")
+'''
+
+network = "net12_1.txt"
+
+# Calculate phase
+with open(network, "r") as network_file:
+
+    links_list = oast_parser.get_links(network)
+    demand_list = oast_parser.get_demands(network)
+
+
 
 
 
