@@ -2,6 +2,8 @@ from Classes import Gene, Chromosome
 import random
 from math import ceil
 
+DEFAULT_MUTATION_PROBABILITY = 0.01
+
 
 def generate_chromosome(list_of_demands):
     list_of_genes = list()  # Empty list for appending Genes
@@ -25,6 +27,41 @@ def generate_chromosome(list_of_demands):
     chromosome = Chromosome(list_of_genes, 0, 0)  # Fitness is updated manually in the main script
     return chromosome
 
+
+# Mutation perturbs the values of the chromosome genes,
+# with a certain low probability
+def mutate_chromosome(chromosome, mutation_probability):
+
+    # Check if possibility is in range between 0 and 1
+    if 0 <= mutation_probability <= 1:
+        mutation_probability = mutation_probability
+    else:
+        mutation_probability = DEFAULT_MUTATION_PROBABILITY
+
+    for gene in chromosome.list_of_genes:
+        # For each gene on the list, decide if mutation will be performed
+        if chromosome.get_random_probability(mutation_probability):
+            number_of_path_flow = len(gene.path_flow_list)
+
+            # Randomly select 2 genes to mutate
+            first_gene_to_mutate = random.randint(0, number_of_path_flow - 1)
+            second_gene_to_mutate = random.randint(0, number_of_path_flow - 1)
+
+            # Check if chosen path flow is different from 0
+            if gene.path_flow_list[first_gene_to_mutate] == 0:
+                first_gene_to_mutate = random.randint(0, number_of_path_flow - 1)
+
+            # Check if selected path flows are different
+            if gene.path_flow_list[second_gene_to_mutate] == gene.path_flow_list[first_gene_to_mutate]:
+                second_gene_to_mutate_gene_to_mutate = random.randint(0, number_of_path_flow - 1)
+
+            gene.path_flow_list[first_gene_to_mutate] += 1
+            gene.path_flow_list[second_gene_to_mutate] -= 1
+
+            return True
+
+        else:
+            return False
 
 # Calculate fitness for all chromosomes in the passed population (list of chromosomes)
 def calculate_fitness(links, demands, population):
