@@ -22,9 +22,14 @@ time = 0
 number_of_generations = 0
 number_of_mutations = 0
 not_improved_in_N_generations = 0
-
 network = ''
+stop_input = ""
 
+# counters
+time_elapsed = 0
+generations_counter = 0
+mutations_counter = 0
+not_improved_counter = 0
 
 # Input phase
 while True:
@@ -57,7 +62,7 @@ while True:
                        "Choose stop criterion:\t")
 
     if stop_input == "1":
-        time = int(input("How many seconds?:\t"))
+        number_of_seconds = int(input("How many seconds?:\t"))
         break
     elif stop_input == "2":
         number_of_generations = int(input("How many generations?:\t"))
@@ -70,6 +75,19 @@ while True:
         break
     else:
         print("You have to choose number 1-4!")
+
+# NIE JESTEM PEWIEN CZY ZADZIALA
+def stop_function(fitness_time, fitness_generations, fitness_mutations, fitness_not_improved):
+    if stop_input == "1" and fitness_time <= number_of_seconds:
+        return False
+    elif stop_input == "2" and fitness_generations <= number_of_generations:
+        return False
+    elif stop_input == "3" and fitness_mutations <= number_of_mutations:
+        return False
+    elif stop_input == "4" and fitness_not_improved <= not_improved_in_N_generations:
+        return False
+    else:
+        return True
 
 
 #network = "net12_1.txt"
@@ -86,16 +104,35 @@ with open(network, "r") as network_file:
 
     EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, current_population)
 
-    for i in first_population:
-        for gene in i.list_of_genes:
-            print(gene.path_flow_list)
-        print("DAP:" + str(i.fitness_dap))
-        print("DDAP:" + str(i.fitness_ddap))
+    #for i in first_population:
+    #    print("Current chromosome genes:\n")
+    #    for gene in i.list_of_genes:
+    #        print(gene.path_flow_list)
+    #    print("DAP:" + str(i.fitness_dap))
+    #    print("DDAP:" + str(i.fitness_ddap))
 
+    while stop_function(time_elapsed, generations_counter, mutations_counter, not_improved_counter):
 
+        # current parameters
+        start_time = time.time()
+        current_ddap = current_population[0].fitness_ddap
+        current_dap = current_population[0].fitness_dap
 
+        new_population = EvolutionaryAlgorithm.crossover_chromosomes(current_population, crossover_probability)
+        for chromosome in new_population:
+            if EvolutionaryAlgorithm.mutate_chromosome(chromosome,mutation_probability):
+                mutations_counter += 1
 
+        EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, new_population)
+        new_population.sort(key= lambda x: x.fitness_ddap)
 
+        if new_population[1].fitness_ddap <= current_ddap and new_population[1].fitness_dap <= current_dap:
+            not_improved_counter += 1
 
+        tmp = new_population[:initial_population] # NA CO TO KOMU ???
+        current_population = tmp
 
+        generations_counter += 1
 
+        end_time = time.time()
+        time_elapsed = end_time - start_time
