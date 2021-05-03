@@ -2,14 +2,10 @@ from Classes import Gene, Chromosome
 import random
 from math import ceil
 
+DEFAULT_POPULATION_SIZE = 10
 DEFAULT_MUTATION_PROBABILITY = 0.01
 DEFAULT_CROSSOVER_PROBABILITY = 0.1
 OFFSPRING_FROM_PARENT_PROBABILITY = 0.5
-
-
-def get_random_probability(self, probability):
-    return random.random() < probability
-
 
 def generate_chromosome(list_of_demands):
     list_of_genes = list()  # Empty list for appending Genes
@@ -23,7 +19,7 @@ def generate_chromosome(list_of_demands):
 
         # Randomly distribute the demand_volume across path flows
         # Sum of path flows must equal demand volume
-        for i in range(demand_volume):
+        for i in range(int(demand_volume)):
             picked_path_flow = random.randint(0, number_of_demand_paths - 1)
             path_flow_list[picked_path_flow] += 1
 
@@ -33,11 +29,18 @@ def generate_chromosome(list_of_demands):
     chromosome = Chromosome(list_of_genes, 0, 0)  # Fitness is updated manually in the main script
     return chromosome
 
+
 def generate_first_population(list_of_demands, population_size):
+
+    # Check if first population size is not empty
+    if len(population_size) == 0:
+        population_size = DEFAULT_POPULATION_SIZE
+
+    #print(population_size)
 
     first_population_list = list()
 
-    for i in range(population_size):
+    for i in range(int(population_size)):
         first_population_list.append(generate_chromosome(list_of_demands))
 
     return first_population_list
@@ -46,11 +49,7 @@ def generate_first_population(list_of_demands, population_size):
 # Mutation perturbs the values of the chromosome genes with a certain low probability
 def mutate_chromosome(chromosome, mutation_probability):
 
-    # Check if possibility is in range between 0 and 1
-    if 0 <= mutation_probability <= 1:
-        mutation_probability = mutation_probability
-    else:
-        mutation_probability = DEFAULT_MUTATION_PROBABILITY
+    check_probability(mutation_probability, DEFAULT_MUTATION_PROBABILITY)
 
     for gene in chromosome.list_of_genes:
         # For each gene on the list, decide if mutation will be performed
@@ -77,17 +76,14 @@ def mutate_chromosome(chromosome, mutation_probability):
         else:
             return False
 
+
 # Crossover exchanges genes between two parent chromosomes to produce two offspring
 def crossover_chromosomes(chromosomes_list, crossover_probability):
 
     # Firstly, list is filled with parent chromosomes
     list_of_parents_and_offsprings = list(chromosomes_list)
 
-    # Check if possibility is in range between 0 and 1
-    if 0 <= crossover_probability <= 1:
-        mutation_probability = crossover_probability
-    else:
-        mutation_probability = DEFAULT_CROSSOVER_PROBABILITY
+    check_probability(crossover_probability, DEFAULT_CROSSOVER_PROBABILITY)
 
     number_of_chromosomes = len(chromosomes_list)
 
@@ -146,3 +142,13 @@ def calculate_fitness(links, demands, population):
 def check_link_in_demand(link, demand, path_num):
     demand_path = demand.list_of_demand_paths[path_num]
     return str(link) in demand_path.link_id_list
+
+
+# Check if possibility is in range between 0 and 1
+def check_probability(probability, default):
+    if not 0 <= probability <= 1:
+        probability = default
+
+
+def get_random_probability(probability):
+    return random.random() < probability

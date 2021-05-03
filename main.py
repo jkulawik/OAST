@@ -1,4 +1,5 @@
 import oast_parser
+import EvolutionaryAlgorithm
 import random
 import time
 
@@ -24,7 +25,7 @@ not_improved_in_N_generations = 0
 
 network = ''
 
-'''
+
 # Input phase
 while True:
     net_input = input("[1] net4.txt\n"
@@ -33,13 +34,13 @@ while True:
                       "Choose network topology txt file:\t")
 
     if net_input == "1":
-        network = "net4.txt"
+        network = "nets/net4.txt"
         break
     elif net_input == "2":
-        network = "net12_1.txt"
+        network = "nets/net12_1.txt"
         break
     elif net_input == "3":
-        network = "net12_2.txt"
+        network = "nets/net12_2.txt"
         break
     else:
         print("You have to choose number 1-3!")
@@ -69,15 +70,27 @@ while True:
         break
     else:
         print("You have to choose number 1-4!")
-'''
 
-network = "net12_1.txt"
+
+#network = "net12_1.txt"
 
 # Calculate phase
 with open(network, "r") as network_file:
 
+    # Get parameters from file
     links_list = oast_parser.get_links(network)
     demand_list = oast_parser.get_demands(network)
+
+    first_population = EvolutionaryAlgorithm.generate_first_population(demand_list, initial_population)
+    current_population = first_population
+
+    EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, current_population)
+
+    for i in first_population:
+        for gene in i.list_of_genes:
+            print(gene.path_flow_list)
+        print("DAP:" + str(i.fitness_dap))
+        print("DDAP:" + str(i.fitness_ddap))
 
 
 
