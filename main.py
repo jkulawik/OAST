@@ -17,8 +17,8 @@ import time
 # Minimize the sum of link costs
 
 # init algorithm parameters
-number_of_generations = 0
-number_of_mutations = 0
+max_number_of_generations = 0
+max_number_of_mutations = 0
 not_improved_in_N_generations = 0
 network = ""
 stop_input = ""
@@ -31,17 +31,16 @@ not_improved_counter = 0
 
 
 # TODO NIE JESTEM PEWIEN CZY ZADZIALA
-def stop_function(fitness_time, fitness_generations, fitness_mutations, fitness_not_improved):
-    if stop_input == "1" and fitness_time <= number_of_seconds:
-        return False
-    elif stop_input == "2" and fitness_generations <= number_of_generations:
-        return False
-    elif stop_input == "3" and fitness_mutations <= number_of_mutations:
-        return False
-    elif stop_input == "4" and fitness_not_improved <= not_improved_in_N_generations:
-        return False
-    else:
-        return True
+def check_if_stop(elapsed_time, generations, mutations, unimproved_generations):
+    print("Stop cryterium: ", stop_input)
+    if stop_input == "1":
+        return elapsed_time <= max_number_of_seconds
+    elif stop_input == "2":
+        return generations <= max_number_of_generations
+    elif stop_input == "3":
+        return mutations <= max_number_of_mutations
+    elif stop_input == "4":
+        return unimproved_generations <= max_unimproved_generations
 
 
 # "MAIN":
@@ -67,6 +66,16 @@ while True:
     else:
         print("You have to choose number 1-3!")
 
+network = "nets/net4.txt"
+initial_population_size = 3
+mutation_probability = 0.1
+
+stop_input = "1"
+max_number_of_seconds = 3
+max_number_of_generations = 5
+max_number_of_mutations = 10
+max_unimproved_generations = 10
+
 if net_input != "T":
     initial_population_size = int(input("Type initial population:\t"))
     mutation_probability = int(input("Type mutation probability:\t"))
@@ -79,31 +88,25 @@ if net_input != "T":
                            "Choose stop criterion:\t")
 
         if stop_input == "1":
-            number_of_seconds = int(input("How many seconds?:\t"))
+            max_number_of_seconds = input("How many seconds?:\t")
             break
         elif stop_input == "2":
-            number_of_generations = int(input("How many generations?:\t"))
+            max_number_of_generations = int(input("How many generations?:\t"))
             break
         elif stop_input == "3":
-            number_of_mutations = int(input("How many mutations?:\t"))
+            max_number_of_mutations = int(input("How many mutations?:\t"))
             break
         elif stop_input == "4":
-            not_improved_in_N_generations = int(input("How many generations when not improved?:\t"))
+            max_unimproved_generations = int(input("How many generations when not improved?:\t"))
             break
         else:
             print("You have to choose number 1-4!")
 else:
-    # this means T[est] was chosen
-    network = "nets/net4.txt"
-    initial_population_size = 3
-    mutation_probability = 0.1
+    # this means T[est] was chosen; keep default values
+    pass
 
-    stop_input = 1
-    number_of_seconds = 3
-    number_of_generations = 5
-    number_of_mutations = 10
-    not_improved_in_N_generations = 10
-
+#print("Stop cryterium: ", stop_input)
+print("Max time: ", max_number_of_seconds)
 
 # The calculations proper:
 with open(network, "r") as network_file:
@@ -124,15 +127,16 @@ with open(network, "r") as network_file:
     #    print("DAP:" + str(i.fitness_dap))
     #    print("DDAP:" + str(i.fitness_ddap))
 
-    while stop_function(time_elapsed, generations_counter, mutations_counter, not_improved_counter):
+    start_time = time.time()
+    while check_if_stop(time_elapsed, generations_counter, mutations_counter, not_improved_counter):
         # current parameters
-        start_time = time.time()
+
         current_ddap = current_population[0].fitness_ddap
         current_dap = current_population[0].fitness_dap
         print("Current DDAP fitness: ", current_ddap)
 
         new_population = EvolutionaryAlgorithm.crossover_chromosomes(current_population, current_ddap)
-        input("Press Enter to continue")
+        #input("Press Enter to continue")
 
         for chromosome in new_population:
             if EvolutionaryAlgorithm.mutate_chromosome(chromosome, mutation_probability):
