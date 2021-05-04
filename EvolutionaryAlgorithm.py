@@ -4,7 +4,6 @@ from math import ceil
 
 DEFAULT_POPULATION_SIZE = 10
 DEFAULT_MUTATION_PROBABILITY = 0.01
-DEFAULT_CROSSOVER_PROBABILITY = 0.1
 OFFSPRING_FROM_PARENT_PROBABILITY = 0.5
 
 
@@ -79,17 +78,21 @@ def mutate_chromosome(chromosome: Chromosome, mutation_probability: float):
 
 # Crossover exchanges genes between two parent chromosomes to produce two offspring
 # A new population is generated; it includes the old population and all offspring.
-def crossover_chromosomes(original_population, crossover_probability: float):
+def crossover_chromosomes(original_population, biggest_ddap: float):
     # Firstly, list is filled with parent chromosomes
     new_population = list(original_population)
 
-    # TODO: the below should be bigger for parents with bigger fitness
-    crossover_probability = check_probability(crossover_probability, DEFAULT_CROSSOVER_PROBABILITY)
-
     # Remove 2 parents from the original population until less than 2 left
-    while len(original_population) >= 2:       # TODO !!! TO CHYBA SIĘ DA JAKOS LADNIEJ ZAPISAC !!!
+    while len(original_population) >= 2:
+        first_parent_score = original_population[0].fitness_ddap/biggest_ddap  # TODO change for DAP when needed
         first_parent_genes = original_population.pop(0).list_of_genes
+        second_parent_score = original_population[0].fitness_ddap/biggest_ddap  # TODO change for DAP when needed
         second_parent_genes = original_population.pop(0).list_of_genes
+
+        # Crossover prob. is determined by parents' fitness
+        crossover_probability = (second_parent_score+first_parent_score)/2
+        if crossover_probability > 1.0:
+            crossover_probability = 1.0
 
         if get_random_bool(crossover_probability):
             first_offspring_genes = list()

@@ -70,7 +70,6 @@ while True:
 if net_input != "T":
     initial_population_size = int(input("Type initial population:\t"))
     mutation_probability = int(input("Type mutation probability:\t"))
-    crossover_probability = int(input("Type crossover probability:\t"))
 
     while True:
         stop_input = input("[1] number of seconds\n"
@@ -98,7 +97,6 @@ else:
     network = "nets/net4.txt"
     initial_population_size = 3
     mutation_probability = 0.1
-    crossover_probability = 0.8
 
     stop_input = 1
     number_of_seconds = 3
@@ -132,14 +130,16 @@ with open(network, "r") as network_file:
         current_ddap = current_population[0].fitness_ddap
         current_dap = current_population[0].fitness_dap
         print("Current DDAP fitness: ", current_ddap)
-        new_population = EvolutionaryAlgorithm.crossover_chromosomes(current_population, crossover_probability)
+
+        new_population = EvolutionaryAlgorithm.crossover_chromosomes(current_population, current_ddap)
         input("Press Enter to continue")
+
         for chromosome in new_population:
             if EvolutionaryAlgorithm.mutate_chromosome(chromosome, mutation_probability):
                 mutations_counter += 1
 
         EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, new_population)
-        new_population.sort(key=lambda x: x.fitness_ddap)
+        new_population.sort(key=lambda x: x.fitness_ddap, reverse=False)  # TODO change for DAP when needed
 
         # Calculate the remaining counters:
         if new_population[1].fitness_ddap <= current_ddap and new_population[1].fitness_dap <= current_dap:
