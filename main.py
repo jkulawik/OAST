@@ -1,6 +1,5 @@
 import oast_parser
 import EvolutionaryAlgorithm
-import random
 import time
 
 
@@ -22,7 +21,7 @@ time = 0  # TODO to chyba psuje kod dalej
 number_of_generations = 0
 number_of_mutations = 0
 not_improved_in_N_generations = 0
-network = ''
+network = ""
 stop_input = ""
 
 # counters
@@ -30,52 +29,6 @@ time_elapsed = 0
 generations_counter = 0
 mutations_counter = 0
 not_improved_counter = 0
-
-# Input phase
-while True:
-    net_input = input("[1] net4.txt\n"
-                      "[2] net12_1.txt\n"
-                      "[3] net12_2.txt\n"
-                      "Choose network topology txt file:\t")
-
-    if net_input == "1":
-        network = "nets/net4.txt"
-        break
-    elif net_input == "2":
-        network = "nets/net12_1.txt"
-        break
-    elif net_input == "3":
-        network = "nets/net12_2.txt"
-        break
-    else:
-        print("You have to choose number 1-3!")
-
-initial_population = input("Type initial population:\t")
-mutation_probability = input("Type mutation probability:\t")
-crossover_probability = input("Type crossover probability:\t")
-
-while True:
-    stop_input = input("[1] number of seconds\n"
-                       "[2] number of generations\n"
-                       "[3] number of mutations\n"
-                       "[4] not improved in N generations\n"
-                       "Choose stop criterion:\t")
-
-    if stop_input == "1":
-        number_of_seconds = int(input("How many seconds?:\t"))
-        break
-    elif stop_input == "2":
-        number_of_generations = int(input("How many generations?:\t"))
-        break
-    elif stop_input == "3":
-        number_of_mutations = int(input("How many mutations?:\t"))
-        break
-    elif stop_input == "4":
-        not_improved_in_N_generations = int(input("How many generations when not improved?:\t"))
-        break
-    else:
-        print("You have to choose number 1-4!")
-
 
 # TODO NIE JESTEM PEWIEN CZY ZADZIALA
 def stop_function(fitness_time, fitness_generations, fitness_mutations, fitness_not_improved):
@@ -91,7 +44,68 @@ def stop_function(fitness_time, fitness_generations, fitness_mutations, fitness_
         return True
 
 
-#network = "net12_1.txt"
+# "MAIN":
+
+# Input phase
+while True:
+    net_input = input("[1] net4.txt\n"
+                      "[2] net12_1.txt\n"
+                      "[3] net12_2.txt\n"
+                      "[T] Test: all parameters from script\n"
+                      "Choose network topology txt file:\t")
+    if net_input == "T":
+        break
+    if net_input == "1":
+        network = "nets/net4.txt"
+        break
+    elif net_input == "2":
+        network = "nets/net12_1.txt"
+        break
+    elif net_input == "3":
+        network = "nets/net12_2.txt"
+        break
+    else:
+        print("You have to choose number 1-3!")
+
+if net_input != "T":
+    initial_population = int(input("Type initial population:\t"))
+    mutation_probability = int(input("Type mutation probability:\t"))
+    crossover_probability = int(input("Type crossover probability:\t"))
+
+    while True:
+        stop_input = input("[1] number of seconds\n"
+                           "[2] number of generations\n"
+                           "[3] number of mutations\n"
+                           "[4] not improved in N generations\n"
+                           "Choose stop criterion:\t")
+
+        if stop_input == "1":
+            number_of_seconds = int(input("How many seconds?:\t"))
+            break
+        elif stop_input == "2":
+            number_of_generations = int(input("How many generations?:\t"))
+            break
+        elif stop_input == "3":
+            number_of_mutations = int(input("How many mutations?:\t"))
+            break
+        elif stop_input == "4":
+            not_improved_in_N_generations = int(input("How many generations when not improved?:\t"))
+            break
+        else:
+            print("You have to choose number 1-4!")
+else:
+    # this means T[est] was chosen
+    network = "nets/net4.txt"
+    initial_population = 3
+    mutation_probability = 0.1
+    crossover_probability = 0.1
+
+    stop_input = 1
+    number_of_seconds = 3
+    number_of_generations = 5
+    number_of_mutations = 10
+    not_improved_in_N_generations = 10
+
 
 # Calculate phase
 with open(network, "r") as network_file:
@@ -121,7 +135,7 @@ with open(network, "r") as network_file:
 
         new_population = EvolutionaryAlgorithm.crossover_chromosomes(current_population, crossover_probability)
         for chromosome in new_population:
-            if EvolutionaryAlgorithm.mutate_chromosome(chromosome,mutation_probability):
+            if EvolutionaryAlgorithm.mutate_chromosome(chromosome, mutation_probability):
                 mutations_counter += 1
 
         EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, new_population)

@@ -31,22 +31,19 @@ def generate_chromosome(list_of_demands):
     return chromosome
 
 
-def generate_first_population(list_of_demands, population_size):
-
-    # Check if first population size is not empty
-    if len(population_size) == 0:
+def generate_first_population(list_of_demands, population_size: int):
+    # Check if first population size is > 0
+    if population_size <= 0:
         population_size = DEFAULT_POPULATION_SIZE
 
     first_population_list = list()
-
-    for i in range(int(population_size)):
+    for i in range(population_size):
         first_population_list.append(generate_chromosome(list_of_demands))
-
     return first_population_list
 
 
 # Mutation perturbs the values of the chromosome genes with a certain low probability
-def mutate_chromosome(chromosome, mutation_probability):
+def mutate_chromosome(chromosome: Chromosome, mutation_probability: float):
 
     check_probability(mutation_probability, DEFAULT_MUTATION_PROBABILITY)
 
@@ -60,6 +57,7 @@ def mutate_chromosome(chromosome, mutation_probability):
             # TODO change first_gene_to_mutate to be a path flow reference not an ID, TEST IF STILL WORKS
             first_gene_to_mutate = random.randint(0, number_of_path_flows - 1)
             second_gene_to_mutate = random.randint(0, number_of_path_flows - 1)
+
 
             # TODO Check if the second path flow won't be smaller than 0, pick new one if yes
             # Check if chosen path flow is different from 0
@@ -81,7 +79,7 @@ def mutate_chromosome(chromosome, mutation_probability):
 
 
 # Crossover exchanges genes between two parent chromosomes to produce two offspring
-def crossover_chromosomes(chromosomes_list, crossover_probability):
+def crossover_chromosomes(chromosomes_list, crossover_probability: float):
 
     # Firstly, list is filled with parent chromosomes
     list_of_parents_and_offsprings = list(chromosomes_list)
@@ -147,11 +145,11 @@ def check_link_in_demand(link, demand, path_num):
 
 
 # Check if possibility is in range between 0 and 1
-def check_probability(probability, default):
+def check_probability(probability: float, default: float):
     # TODO czy to nie działa na kopii zamiast edytować zasób?
     if not 0 <= probability <= 1:
         probability = default
 
 
-def get_random_bool(probability):
+def get_random_bool(probability: float):
     return random.random() < probability

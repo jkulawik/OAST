@@ -1,7 +1,5 @@
 from Classes import Link, Demand, DemandPath
 
-#network_file = "net12_1.txt"
-
 
 def get_links(network_file):
     links = list()
