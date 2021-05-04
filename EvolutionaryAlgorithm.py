@@ -45,7 +45,7 @@ def generate_first_population(list_of_demands, population_size: int):
 # Mutation perturbs the values of the chromosome genes with a certain low probability
 def mutate_chromosome(chromosome: Chromosome, mutation_probability: float):
 
-    check_probability(mutation_probability, DEFAULT_MUTATION_PROBABILITY)
+    mutation_probability = check_probability(mutation_probability, DEFAULT_MUTATION_PROBABILITY)
 
     for gene in chromosome.list_of_genes:
         # For each gene on the list, decide if mutation will be performed
@@ -73,22 +73,18 @@ def mutate_chromosome(chromosome: Chromosome, mutation_probability: float):
             gene.path_flow_list[second_gene_to_mutate] -= 1
 
             return True
-
         else:
             return False
 
 
 # Crossover exchanges genes between two parent chromosomes to produce two offspring
 def crossover_chromosomes(chromosomes_list, crossover_probability: float):
-
     # Firstly, list is filled with parent chromosomes
     list_of_parents_and_offsprings = list(chromosomes_list)
 
-    check_probability(crossover_probability, DEFAULT_CROSSOVER_PROBABILITY)
+    crossover_probability = check_probability(crossover_probability, DEFAULT_CROSSOVER_PROBABILITY)
 
-    number_of_chromosomes = len(chromosomes_list)
-
-    while number_of_chromosomes >= 2:       # TODO !!! TO CHYBA SIĘ DA JAKOS LADNIEJ ZAPISAC !!!
+    while len(chromosomes_list) >= 2:       # TODO !!! TO CHYBA SIĘ DA JAKOS LADNIEJ ZAPISAC !!!
         first_parent_genes = chromosomes_list.pop(0).list_of_genes
         second_parent_genes = chromosomes_list.pop(0).list_of_genes
 
@@ -96,9 +92,8 @@ def crossover_chromosomes(chromosomes_list, crossover_probability: float):
         second_offspring_genes = list()
 
         if get_random_bool(crossover_probability):
-
             # Create offspring from parents genes
-            for i in range(first_offspring_genes):
+            for i in range(len(first_offspring_genes)):  # TODO to jest pusta lista więc to chyba martwy kod
                 # First offspring from first parent, second offspring from second parent
                 if get_random_bool(OFFSPRING_FROM_PARENT_PROBABILITY):
                     first_offspring_genes.append(first_parent_genes[i])
@@ -146,9 +141,10 @@ def check_link_in_demand(link, demand, path_num):
 
 # Check if possibility is in range between 0 and 1
 def check_probability(probability: float, default: float):
-    # TODO czy to nie działa na kopii zamiast edytować zasób?
     if not 0 <= probability <= 1:
-        probability = default
+        return default
+    else:
+        return probability
 
 
 def get_random_bool(probability: float):
