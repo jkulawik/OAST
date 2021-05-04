@@ -19,7 +19,7 @@ def get_links(network_file):
             number_of_modules=int(link[2]),
             module_cost=int(link[3]),
             link_module=int(link[4]))
-        link_obj.print()  # Debug
+        #link_obj.print()
         links.append(link_obj)
 
     assert(int(file.readline()) == -1)  # Check for the -1 separator
@@ -39,7 +39,6 @@ def get_demands(network_file):
 
     file.readline()  # Skip blank line
     n_demands = int(file.readline())
-    print(n_demands)
 
     for i in range(n_demands):
         file.readline()  # Skip blank line
@@ -65,7 +64,7 @@ def get_demands(network_file):
             number_of_demand_paths=n_of_demand_paths,
             list_of_demand_paths=demand_paths_list
         )
-        demand_obj.print()
+        #demand_obj.print()
         demands.append(demand_obj)
 
     file.close()
