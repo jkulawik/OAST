@@ -18,7 +18,7 @@ import time
 # Minimize the sum of link costs
 
 # init algorithm parameters
-time = 0
+time = 0  # TODO to chyba psuje kod dalej
 number_of_generations = 0
 number_of_mutations = 0
 not_improved_in_N_generations = 0
@@ -76,7 +76,8 @@ while True:
     else:
         print("You have to choose number 1-4!")
 
-# NIE JESTEM PEWIEN CZY ZADZIALA
+
+# TODO NIE JESTEM PEWIEN CZY ZADZIALA
 def stop_function(fitness_time, fitness_generations, fitness_mutations, fitness_not_improved):
     if stop_input == "1" and fitness_time <= number_of_seconds:
         return False
@@ -124,12 +125,12 @@ with open(network, "r") as network_file:
                 mutations_counter += 1
 
         EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, new_population)
-        new_population.sort(key= lambda x: x.fitness_ddap)
+        new_population.sort(key=lambda x: x.fitness_ddap)
 
         if new_population[1].fitness_ddap <= current_ddap and new_population[1].fitness_dap <= current_dap:
             not_improved_counter += 1
 
-        tmp = new_population[:initial_population] # NA CO TO KOMU ???
+        tmp = new_population[:initial_population]  # TODO NA CO TO KOMU ???
         current_population = tmp
 
         generations_counter += 1
