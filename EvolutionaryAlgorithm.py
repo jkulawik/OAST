@@ -78,44 +78,51 @@ def mutate_chromosome(chromosome: Chromosome, mutation_probability: float):
 
 
 # Crossover exchanges genes between two parent chromosomes to produce two offspring
-def crossover_chromosomes(chromosomes_list, crossover_probability: float):
+# A new population is generated; it includes the old population and all offspring.
+def crossover_chromosomes(original_population, crossover_probability: float):
     # Firstly, list is filled with parent chromosomes
-    list_of_parents_and_offsprings = list(chromosomes_list)
+    new_population = list(original_population)
 
+    # TODO: the below should be bigger for parents with bigger fitness
     crossover_probability = check_probability(crossover_probability, DEFAULT_CROSSOVER_PROBABILITY)
 
-    while len(chromosomes_list) >= 2:       # TODO !!! TO CHYBA SIĘ DA JAKOS LADNIEJ ZAPISAC !!!
-        first_parent_genes = chromosomes_list.pop(0).list_of_genes
-        second_parent_genes = chromosomes_list.pop(0).list_of_genes
-
-        first_offspring_genes = list()
-        second_offspring_genes = list()
+    # Remove 2 parents from the original population until less than 2 left
+    while len(original_population) >= 2:       # TODO !!! TO CHYBA SIĘ DA JAKOS LADNIEJ ZAPISAC !!!
+        first_parent_genes = original_population.pop(0).list_of_genes
+        second_parent_genes = original_population.pop(0).list_of_genes
 
         if get_random_bool(crossover_probability):
-            # Create offspring from parents genes
-            for i in range(len(first_offspring_genes)):  # TODO to jest pusta lista więc to chyba martwy kod
-                # First offspring from first parent, second offspring from second parent
+            first_offspring_genes = list()
+            second_offspring_genes = list()
+
+            # Create offspring from parent genes:
+            # For each gene in the parent chromosome...
+            for i in range(0, len(first_parent_genes)):
+                # First offspring gets gene from first parent, second offspring from second parent
                 if get_random_bool(OFFSPRING_FROM_PARENT_PROBABILITY):
                     first_offspring_genes.append(first_parent_genes[i])
                     second_offspring_genes.append(second_parent_genes[i])
-                # First offspring from second parent, second offspring from first parent
+                # vice versa as the above:
                 else:
-                    first_offspring_genes.append(second_offspring_genes[i])
-                    second_offspring_genes.append(first_offspring_genes[i])
+                    first_offspring_genes.append(second_parent_genes[i])
+                    second_offspring_genes.append(first_parent_genes[i])
 
             # Add offsprings to the whole list
-            list_of_parents_and_offsprings.append(Chromosome(first_offspring_genes, 0, 0))
-            list_of_parents_and_offsprings.append(Chromosome(second_offspring_genes, 0, 0))
-
-    return list_of_parents_and_offsprings
+            first_offspring = Chromosome(first_offspring_genes, 0, 0)
+            second_offspring = Chromosome(second_offspring_genes, 0, 0)
+            new_population.append(first_offspring)
+            new_population.append(second_offspring)
+    return new_population
 
 
 # Calculate fitness for all chromosomes in the passed population (list of chromosomes)
 def calculate_fitness(links, demands, population):
     for chromosome in population:
-        l = [0 for i in range(len(links))]  # Link loads
-        y = [0 for i in range(len(links))]  # Link size (for DDAP)
-        f = [0 for i in range(len(links))]  # Link overloads (for DAP)
+        number_of_links = len(links)
+        # Init lists with zeros
+        l = [0] * number_of_links  # Link loads
+        y = [0] * number_of_links  # Link size (for DDAP)
+        f = [0] * number_of_links  # Link overloads (for DAP)
         chromosome.fitness_ddap = 0
         chromosome.fitness_dap = 0
         for d in range(len(chromosome.list_of_genes)):

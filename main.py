@@ -17,7 +17,6 @@ import time
 # Minimize the sum of link costs
 
 # init algorithm parameters
-time = 0  # TODO to chyba psuje kod dalej
 number_of_generations = 0
 number_of_mutations = 0
 not_improved_in_N_generations = 0
@@ -29,6 +28,7 @@ time_elapsed = 0
 generations_counter = 0
 mutations_counter = 0
 not_improved_counter = 0
+
 
 # TODO NIE JESTEM PEWIEN CZY ZADZIALA
 def stop_function(fitness_time, fitness_generations, fitness_mutations, fitness_not_improved):
@@ -68,7 +68,7 @@ while True:
         print("You have to choose number 1-3!")
 
 if net_input != "T":
-    initial_population = int(input("Type initial population:\t"))
+    initial_population_size = int(input("Type initial population:\t"))
     mutation_probability = int(input("Type mutation probability:\t"))
     crossover_probability = int(input("Type crossover probability:\t"))
 
@@ -96,9 +96,9 @@ if net_input != "T":
 else:
     # this means T[est] was chosen
     network = "nets/net4.txt"
-    initial_population = 3
+    initial_population_size = 3
     mutation_probability = 0.1
-    crossover_probability = 0.1
+    crossover_probability = 0.8
 
     stop_input = 1
     number_of_seconds = 3
@@ -107,14 +107,14 @@ else:
     not_improved_in_N_generations = 10
 
 
-# Calculate phase
+# The calculations proper:
 with open(network, "r") as network_file:
 
     # Get parameters from file
     links_list = oast_parser.get_links(network)
     demand_list = oast_parser.get_demands(network)
 
-    first_population = EvolutionaryAlgorithm.generate_first_population(demand_list, initial_population)
+    first_population = EvolutionaryAlgorithm.generate_first_population(demand_list, initial_population_size)
     current_population = first_population
 
     EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, current_population)
@@ -127,13 +127,13 @@ with open(network, "r") as network_file:
     #    print("DDAP:" + str(i.fitness_ddap))
 
     while stop_function(time_elapsed, generations_counter, mutations_counter, not_improved_counter):
-
         # current parameters
         start_time = time.time()
         current_ddap = current_population[0].fitness_ddap
         current_dap = current_population[0].fitness_dap
-
+        print("Current DDAP fitness: ", current_ddap)
         new_population = EvolutionaryAlgorithm.crossover_chromosomes(current_population, crossover_probability)
+        input("Press Enter to continue")
         for chromosome in new_population:
             if EvolutionaryAlgorithm.mutate_chromosome(chromosome, mutation_probability):
                 mutations_counter += 1
@@ -141,13 +141,13 @@ with open(network, "r") as network_file:
         EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, new_population)
         new_population.sort(key=lambda x: x.fitness_ddap)
 
+        # Calculate the remaining counters:
         if new_population[1].fitness_ddap <= current_ddap and new_population[1].fitness_dap <= current_dap:
             not_improved_counter += 1
-
-        tmp = new_population[:initial_population]  # TODO NA CO TO KOMU ???
-        current_population = tmp
-
         generations_counter += 1
-
         end_time = time.time()
         time_elapsed = end_time - start_time
+
+        # Keep n=initial_population_size best chromosomes, discard rest
+        tmp = new_population[:initial_population_size]
+        current_population = tmp
