@@ -1,3 +1,5 @@
+import math
+
 import oast_parser
 import EvolutionaryAlgorithm
 import time
@@ -65,13 +67,13 @@ while True:
         print("You have to choose number 1-3!")
 
 network = "nets/net4.txt"
-initial_population_size = 3
-mutation_probability = 0.1
+initial_population_size = 10
+mutation_probability = 0.03
 
 stop_input = "1"
 max_number_of_seconds = 3
-max_number_of_generations = 5
-max_number_of_mutations = 10
+max_number_of_generations = 20
+max_number_of_mutations = 100
 max_unimproved_generations = 10
 
 if net_input != "T":
@@ -103,9 +105,6 @@ else:
     # this means T[est] was chosen; keep default values
     pass
 
-#print("Stop cryterium: ", stop_input)
-print("Max time: ", max_number_of_seconds)
-
 # The calculations proper:
 with open(network, "r") as network_file:
 
@@ -126,12 +125,23 @@ with open(network, "r") as network_file:
     #    print("DDAP:" + str(i.fitness_ddap))
 
     start_time = time.time()
+    # Init references for the results
+    best_ddap_chromosome = current_population[0]
+    best_ddap = math.inf
+    best_dap_chromosome = current_population[0]
+    best_dap = math.inf
     while check_if_stop(time_elapsed, generations_counter, mutations_counter, not_improved_counter):
-        # current parameters
-
+        # Current parameters
         current_ddap = current_population[0].fitness_ddap
         current_dap = current_population[0].fitness_dap
         print("Current DDAP fitness: ", current_ddap)
+
+        if current_ddap < best_ddap:
+            best_ddap_chromosome = current_population[0]
+            best_ddap = current_population[0].fitness_ddap
+        if current_dap < best_dap:
+            best_dap_chromosome = current_population[0]
+            best_dap = current_population[0].fitness_dap
 
         new_population = EvolutionaryAlgorithm.crossover_chromosomes(current_population, current_ddap)
         #input("Press Enter to continue")
@@ -140,12 +150,12 @@ with open(network, "r") as network_file:
             EvolutionaryAlgorithm.mutate_chromosome(chromosome, mutation_probability)
             mutations_counter += 1
 
-        # TODO: The best ddap fitness can go down for some reason. Fix this
         EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, new_population)
         new_population.sort(key=lambda x: x.fitness_ddap, reverse=False)  # TODO change for DAP when needed
 
         # Calculate the remaining counters:
-        if new_population[1].fitness_ddap <= current_ddap and new_population[1].fitness_dap <= current_dap:  # TODO tu nie powinno być [0]?
+        # TODO tu nie powinno być [0]?
+        if new_population[1].fitness_ddap <= current_ddap:  # TODO Change for DAP when needed
             not_improved_counter += 1
         generations_counter += 1
         end_time = time.time()
@@ -154,3 +164,8 @@ with open(network, "r") as network_file:
         # Keep n=initial_population_size best chromosomes, discard rest
         tmp = new_population[:initial_population_size]
         current_population = tmp
+
+# Loop finished: process results
+print("Best DDAP fitness: ", best_ddap)
+print("Best DAP fitness: ", best_dap)
+
