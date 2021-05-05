@@ -30,7 +30,6 @@ mutations_counter = 0
 not_improved_counter = 0
 
 
-# TODO NIE JESTEM PEWIEN CZY ZADZIALA
 def check_if_stop(elapsed_time, generations, mutations, unimproved_generations):
     if stop_input == "1":
         return elapsed_time <= max_number_of_seconds
@@ -141,11 +140,12 @@ with open(network, "r") as network_file:
             EvolutionaryAlgorithm.mutate_chromosome(chromosome, mutation_probability)
             mutations_counter += 1
 
+        # TODO: The best ddap fitness can go down for some reason. Fix this
         EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, new_population)
         new_population.sort(key=lambda x: x.fitness_ddap, reverse=False)  # TODO change for DAP when needed
 
         # Calculate the remaining counters:
-        if new_population[1].fitness_ddap <= current_ddap and new_population[1].fitness_dap <= current_dap:
+        if new_population[1].fitness_ddap <= current_ddap and new_population[1].fitness_dap <= current_dap:  # TODO tu nie powinno być [0]?
             not_improved_counter += 1
         generations_counter += 1
         end_time = time.time()
