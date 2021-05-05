@@ -1,5 +1,5 @@
 import math
-
+from matplotlib import pyplot
 import oast_parser
 import EvolutionaryAlgorithm
 import time
@@ -125,11 +125,25 @@ with open(network, "r") as network_file:
     #    print("DDAP:" + str(i.fitness_ddap))
 
     start_time = time.time()
-    # Init references for the results
+    current_population.sort(key=lambda x: x.fitness_ddap, reverse=False)  # TODO change for DAP when needed
+    # Init references for DDAP results
     best_ddap_chromosome = current_population[0]
+    best_ddap_chromosomes = list()  # Trajectory
+    best_ddap_chromosomes.append(best_ddap_chromosome)
     best_ddap = math.inf
+    # For trajectory graph:
+    best_ddap_list = list()
+    best_ddap_generations = list()  # X values for graph
+
+    # Init references for DAP results
     best_dap_chromosome = current_population[0]
+    best_dap_chromosomes = list()  # Trajectory
+    best_dap_chromosomes.append(best_dap_chromosome)
     best_dap = math.inf
+    # For trajectory graph:
+    best_dap_list = list()
+    best_dap_generations = list()  # X values for graph
+
     while check_if_stop(time_elapsed, generations_counter, mutations_counter, not_improved_counter):
         # Current parameters
         current_ddap = current_population[0].fitness_ddap
@@ -139,13 +153,17 @@ with open(network, "r") as network_file:
         if current_ddap < best_ddap:
             best_ddap_chromosome = current_population[0]
             best_ddap = current_population[0].fitness_ddap
+            best_ddap_chromosomes.append(best_ddap_chromosome)
+            best_ddap_generations.append(generations_counter)
+            best_ddap_list.append(best_ddap_chromosome.fitness_ddap)
         if current_dap < best_dap:
             best_dap_chromosome = current_population[0]
             best_dap = current_population[0].fitness_dap
+            best_dap_chromosomes.append(best_dap_chromosome)
+            best_dap_generations.append(generations_counter)
+            best_dap_list.append(best_dap_chromosome.fitness_dap)
 
         new_population = EvolutionaryAlgorithm.crossover_chromosomes(current_population, current_ddap)
-        #input("Press Enter to continue")
-
         for chromosome in new_population:
             EvolutionaryAlgorithm.mutate_chromosome(chromosome, mutation_probability)
             mutations_counter += 1
@@ -154,8 +172,7 @@ with open(network, "r") as network_file:
         new_population.sort(key=lambda x: x.fitness_ddap, reverse=False)  # TODO change for DAP when needed
 
         # Calculate the remaining counters:
-        # TODO tu nie powinno być [0]?
-        if new_population[1].fitness_ddap <= current_ddap:  # TODO Change for DAP when needed
+        if new_population[0].fitness_ddap <= best_ddap:  # TODO Change for DAP when needed
             not_improved_counter += 1
         generations_counter += 1
         end_time = time.time()
@@ -168,6 +185,13 @@ with open(network, "r") as network_file:
 # Loop finished: process results
 print("Best DDAP fitness: ", best_ddap)
 print("Best DAP fitness: ", best_dap)
+
+# Graph
+pyplot.plot(best_ddap_generations, best_ddap_list, 'o-g')  # TODO Change for DAP when needed
+pyplot.xlabel("Generation")
+pyplot.ylabel("Best chromosome fitness")
+pyplot.title("Optimization Trajectory")
+pyplot.show()
 
 # TODO output printer in the correct format
 # TODO print best_ddap_chromosome to file
