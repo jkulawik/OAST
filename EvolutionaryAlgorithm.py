@@ -53,23 +53,27 @@ def mutate_chromosome(chromosome: Chromosome, mutation_probability: float):
             number_of_path_flows = len(gene.path_flow_list)
 
             # Randomly select 2 genes to mutate
-            # TODO change first_gene_to_mutate to be a path flow reference not an ID, TEST IF STILL WORKS
-            first_gene_to_mutate = random.randint(0, number_of_path_flows - 1)
-            second_gene_to_mutate = random.randint(0, number_of_path_flows - 1)
+            first_path_flow_id = random.randint(0, number_of_path_flows - 1)
+            second_path_flow_id = random.randint(0, number_of_path_flows - 1)
 
+            # Check if 2nd path flow won't be smaller than 0 after decrementing it
+            # and check if the same path flow wasn't chosen for both operations;
+            # Get a new 2nd one until the conditions are met
+            iterations = 0
+            while gene.path_flow_list[second_path_flow_id] < 1 or first_path_flow_id == second_path_flow_id:
+                second_path_flow_id = random.randint(0, number_of_path_flows - 1)
 
-            # TODO Check if the second path flow won't be smaller than 0, pick new one if yes
-            # Check if chosen path flow is different from 0
-            if gene.path_flow_list[first_gene_to_mutate] == 0:
-                first_gene_to_mutate = random.randint(0, number_of_path_flows - 1)
+                iterations += 1
+                if iterations > number_of_path_flows:
+                    # We've looped over the whole gene and found no solution; the loop is now soft-locked
+                    # Try again with a new first_path_flow_id
+                    first_path_flow_id = random.randint(0, number_of_path_flows - 1)
+                    # WARNING: THIS CAN STILL SOFT-LOCK
 
-            # Check if selected path flows are different
-            if gene.path_flow_list[second_gene_to_mutate] == gene.path_flow_list[first_gene_to_mutate]:
-                second_gene_to_mutate_gene_to_mutate = random.randint(0, number_of_path_flows - 1)
-                # TODO need to re-check the path flow...
-
-            gene.path_flow_list[first_gene_to_mutate] += 1
-            gene.path_flow_list[second_gene_to_mutate] -= 1
+            print(gene.path_flow_list)
+            gene.path_flow_list[first_path_flow_id] += 1
+            gene.path_flow_list[second_path_flow_id] -= 1
+            print(gene.path_flow_list)
 
             return True
         else:

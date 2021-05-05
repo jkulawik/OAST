@@ -32,7 +32,6 @@ not_improved_counter = 0
 
 # TODO NIE JESTEM PEWIEN CZY ZADZIALA
 def check_if_stop(elapsed_time, generations, mutations, unimproved_generations):
-    print("Stop cryterium: ", stop_input)
     if stop_input == "1":
         return elapsed_time <= max_number_of_seconds
     elif stop_input == "2":
