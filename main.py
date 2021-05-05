@@ -50,9 +50,9 @@ while True:
     net_input = input("[1] net4.txt\n"
                       "[2] net12_1.txt\n"
                       "[3] net12_2.txt\n"
-                      "[T] Test: all parameters from script\n"
+                      "[s] Skip manual input and use script defaults\n"
                       "Choose network topology txt file:\t")
-    if net_input == "T":
+    if net_input == "s":
         break
     if net_input == "1":
         network = "nets/net4.txt"
@@ -76,7 +76,7 @@ max_number_of_generations = 20
 max_number_of_mutations = 100
 max_unimproved_generations = 10
 
-if net_input != "T":
+if net_input != "s":
     initial_population_size = int(input("Type initial population:\t"))
     mutation_probability = int(input("Type mutation probability:\t"))
 
@@ -169,3 +169,6 @@ with open(network, "r") as network_file:
 print("Best DDAP fitness: ", best_ddap)
 print("Best DAP fitness: ", best_dap)
 
+# TODO output printer in the correct format
+# TODO print best_ddap_chromosome to file
+# TODO print best_dap_chromosome to file
