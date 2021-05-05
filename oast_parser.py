@@ -1,9 +1,7 @@
 from Classes import Link, Demand, DemandPath
 
-network_file = "net12_1.txt"
 
-
-def get_links():
+def get_links(network_file):
     links = list()
     file = open(network_file, "r")
 
@@ -21,7 +19,7 @@ def get_links():
             number_of_modules=int(link[2]),
             module_cost=int(link[3]),
             link_module=int(link[4]))
-        link_obj.print()  # Debug
+        #link_obj.print()
         links.append(link_obj)
 
     assert(int(file.readline()) == -1)  # Check for the -1 separator
@@ -30,7 +28,7 @@ def get_links():
     return links
 
 
-def get_demands():
+def get_demands(network_file):
     demands = list()
     file = open(network_file, "r")
     # Same as with get_links but we do it to skip that part of the file
@@ -41,7 +39,6 @@ def get_demands():
 
     file.readline()  # Skip blank line
     n_demands = int(file.readline())
-    print(n_demands)
 
     for i in range(n_demands):
         file.readline()  # Skip blank line
@@ -67,7 +64,7 @@ def get_demands():
             number_of_demand_paths=n_of_demand_paths,
             list_of_demand_paths=demand_paths_list
         )
-        demand_obj.print()
+        #demand_obj.print()
         demands.append(demand_obj)
 
     file.close()
