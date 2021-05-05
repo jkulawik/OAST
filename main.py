@@ -138,8 +138,8 @@ with open(network, "r") as network_file:
         #input("Press Enter to continue")
 
         for chromosome in new_population:
-            if EvolutionaryAlgorithm.mutate_chromosome(chromosome, mutation_probability):
-                mutations_counter += 1
+            EvolutionaryAlgorithm.mutate_chromosome(chromosome, mutation_probability)
+            mutations_counter += 1
 
         EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, new_population)
         new_population.sort(key=lambda x: x.fitness_ddap, reverse=False)  # TODO change for DAP when needed

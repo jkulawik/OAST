@@ -70,14 +70,8 @@ def mutate_chromosome(chromosome: Chromosome, mutation_probability: float):
                     first_path_flow_id = random.randint(0, number_of_path_flows - 1)
                     # WARNING: THIS CAN STILL SOFT-LOCK
 
-            print(gene.path_flow_list)
             gene.path_flow_list[first_path_flow_id] += 1
             gene.path_flow_list[second_path_flow_id] -= 1
-            print(gene.path_flow_list)
-
-            return True
-        else:
-            return False
 
 
 # Crossover exchanges genes between two parent chromosomes to produce two offspring
