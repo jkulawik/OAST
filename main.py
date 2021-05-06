@@ -3,7 +3,7 @@ from matplotlib import pyplot
 import oast_parser
 import EvolutionaryAlgorithm
 import time
-
+import random
 
 # DAP: find allocation of path flows that minimizes the max load function.
 # link capacity = link module * number of modules
@@ -24,6 +24,8 @@ max_number_of_mutations = 0
 not_improved_in_N_generations = 0
 network = ""
 stop_input = ""
+seed = 4
+random.seed(seed)
 
 # counters
 time_elapsed = 0
@@ -52,8 +54,6 @@ while True:
                       "[3] net12_2.txt\n"
                       "[s] Skip manual input and use script defaults\n"
                       "Choose network topology txt file:\t")
-    if net_input == "s":
-        break
     if net_input == "1":
         network = "nets/net4.txt"
         break
@@ -63,22 +63,19 @@ while True:
     elif net_input == "3":
         network = "nets/net12_2.txt"
         break
+    elif net_input == "s":
+        network = "nets/net4.txt"
+        initial_population_size = 10
+        mutation_probability = 0.03
+        stop_input = "1"
+        max_number_of_seconds = 3
+        break
     else:
-        print("You have to choose number 1-3!")
-
-network = "nets/net4.txt"
-initial_population_size = 10
-mutation_probability = 0.03
-
-stop_input = "1"
-max_number_of_seconds = 3
-max_number_of_generations = 20
-max_number_of_mutations = 100
-max_unimproved_generations = 10
+        print("You have to choose number 1-3 or 's'!")
 
 if net_input != "s":
     initial_population_size = int(input("Type initial population:\t"))
-    mutation_probability = int(input("Type mutation probability:\t"))
+    mutation_probability = input("Type mutation probability:\t")
 
     while True:
         stop_input = input("[1] number of seconds\n"
@@ -88,7 +85,7 @@ if net_input != "s":
                            "Choose stop criterion:\t")
 
         if stop_input == "1":
-            max_number_of_seconds = input("How many seconds?:\t")
+            max_number_of_seconds = float(input("How many seconds?:\t"))
             break
         elif stop_input == "2":
             max_number_of_generations = int(input("How many generations?:\t"))
@@ -102,7 +99,7 @@ if net_input != "s":
         else:
             print("You have to choose number 1-4!")
 else:
-    # this means T[est] was chosen; keep default values
+    # this means s[kip] was chosen; keep default values
     pass
 
 # The calculations proper:
@@ -165,7 +162,7 @@ with open(network, "r") as network_file:
 
         new_population = EvolutionaryAlgorithm.crossover_chromosomes(current_population, current_ddap)
         for chromosome in new_population:
-            EvolutionaryAlgorithm.mutate_chromosome(chromosome, mutation_probability)
+            EvolutionaryAlgorithm.mutate_chromosome(chromosome, float(mutation_probability))
             mutations_counter += 1
 
         EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, new_population)

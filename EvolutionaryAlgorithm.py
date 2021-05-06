@@ -44,7 +44,9 @@ def generate_first_population(list_of_demands, population_size: int):
 # Mutation perturbs the values of the chromosome genes with a certain low probability
 def mutate_chromosome(chromosome: Chromosome, mutation_probability: float):
 
-    mutation_probability = check_probability(mutation_probability, DEFAULT_MUTATION_PROBABILITY)
+    #mutation_probability = check_probability(mutation_probability, DEFAULT_MUTATION_PROBABILITY)
+    if not 0 <= mutation_probability <= 1:
+        mutation_probability = DEFAULT_MUTATION_PROBABILITY
 
     for gene in chromosome.list_of_genes:
         # For each gene on the list, decide if mutation will be performed
