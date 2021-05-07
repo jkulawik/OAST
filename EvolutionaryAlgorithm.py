@@ -78,15 +78,15 @@ def mutate_chromosome(chromosome: Chromosome, mutation_probability: float):
 
 # Crossover exchanges genes between two parent chromosomes to produce two offspring
 # A new population is generated; it includes the old population and all offspring.
-def crossover_chromosomes(original_population, biggest_ddap: float):
+def crossover_chromosomes(original_population, biggest_ddap: float, multiplier):
     # Firstly, list is filled with parent chromosomes
     new_population = list(original_population)
 
     # Remove 2 parents from the original population until less than 2 left
     while len(original_population) >= 2:
-        first_parent_score = original_population[0].fitness_ddap/biggest_ddap  # TODO change for DAP when needed
+        first_parent_score = original_population[0].fitness_ddap/biggest_ddap*multiplier  # TODO change for DAP when needed
         first_parent_genes = original_population.pop(0).list_of_genes
-        second_parent_score = original_population[0].fitness_ddap/biggest_ddap  # TODO change for DAP when needed
+        second_parent_score = original_population[0].fitness_ddap/biggest_ddap*multiplier  # TODO change for DAP when needed
         second_parent_genes = original_population.pop(0).list_of_genes
 
         # Crossover prob. is determined by parents' fitness
