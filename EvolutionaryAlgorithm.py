@@ -44,7 +44,9 @@ def generate_first_population(list_of_demands, population_size: int):
 # Mutation perturbs the values of the chromosome genes with a certain low probability
 def mutate_chromosome(chromosome: Chromosome, mutation_probability: float):
 
-    mutation_probability = check_probability(mutation_probability, DEFAULT_MUTATION_PROBABILITY)
+    #mutation_probability = check_probability(mutation_probability, DEFAULT_MUTATION_PROBABILITY)
+    if not 0 <= mutation_probability <= 1:
+        mutation_probability = DEFAULT_MUTATION_PROBABILITY
 
     for gene in chromosome.list_of_genes:
         # For each gene on the list, decide if mutation will be performed
@@ -76,15 +78,15 @@ def mutate_chromosome(chromosome: Chromosome, mutation_probability: float):
 
 # Crossover exchanges genes between two parent chromosomes to produce two offspring
 # A new population is generated; it includes the old population and all offspring.
-def crossover_chromosomes(original_population, biggest_ddap: float):
+def crossover_chromosomes(original_population, biggest_ddap: float, multiplier: float):
     # Firstly, list is filled with parent chromosomes
     new_population = list(original_population)
 
     # Remove 2 parents from the original population until less than 2 left
     while len(original_population) >= 2:
-        first_parent_score = original_population[0].fitness_ddap/biggest_ddap  # TODO change for DAP when needed
+        first_parent_score = original_population[0].fitness_ddap/biggest_ddap*multiplier  # TODO change for DAP when needed
         first_parent_genes = original_population.pop(0).list_of_genes
-        second_parent_score = original_population[0].fitness_ddap/biggest_ddap  # TODO change for DAP when needed
+        second_parent_score = original_population[0].fitness_ddap/biggest_ddap*multiplier  # TODO change for DAP when needed
         second_parent_genes = original_population.pop(0).list_of_genes
 
         # Crossover prob. is determined by parents' fitness
