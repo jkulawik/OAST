@@ -20,13 +20,19 @@ import random
 # Minimize the sum of link costs
 
 # init algorithm parameters
-max_number_of_generations = 0
-max_number_of_mutations = 0
 not_improved_in_N_generations = 0
-network = ""
-stop_input = ""
+initial_population_size = 10
+mutation_probability = 0.03
+crossover_probability_multiplier = 0.1
 seed = 4
 random.seed(seed)
+
+network = "nets/net4.txt"
+stop_input = "1"
+max_number_of_seconds = 3
+max_number_of_generations = 20
+max_number_of_mutations = 100
+max_unimproved_generations = 10
 
 # counters
 generations_counter = 0
@@ -65,12 +71,7 @@ while True:
         network = "nets/net12_2.txt"
         break
     elif net_input == "s":
-        network = "nets/net4.txt"
-        initial_population_size = 10
-        mutation_probability = 0.03
-        crossover_probability_multiplier = 0.1
-        stop_input = "1"
-        max_number_of_seconds = 3
+        # Default values from init (top of the file) are kept
         break
     else:
         print("You have to choose number 1-3 or 's'!")
@@ -79,7 +80,7 @@ if net_input != "s":
 
     initial_population_size = int(input("Type initial population:\t"))
     mutation_probability = float(input("Type mutation probability:\t"))
-    crossover_probability_multiplier = float(input("Type crossover probability multiplier:\t")) # TODO moze jakos inaczej nazwac
+    crossover_probability_multiplier = float(input("Type crossover probability multiplier:\t"))  # TODO moze jakos inaczej nazwac
 
     while True:
         stop_input = input("[1] number of seconds\n"
@@ -118,13 +119,6 @@ with open(network, "r") as network_file:
 
     EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, current_population)
 
-    #for i in first_population:
-    #    print("Current chromosome genes:\n")
-    #    for gene in i.list_of_genes:
-    #        print(gene.path_flow_list)
-    #    print("DAP:" + str(i.fitness_dap))
-    #    print("DDAP:" + str(i.fitness_ddap))
-
     start_time = time.time()
     current_population.sort(key=lambda x: x.fitness_ddap, reverse=False)  # TODO change for DAP when needed
     # Init references for DDAP results
@@ -149,7 +143,6 @@ with open(network, "r") as network_file:
         # Current parameters
         current_ddap = current_population[0].fitness_ddap
         current_dap = current_population[0].fitness_dap
-        #print("Current DDAP fitness: ", current_ddap)
 
         if current_ddap < best_ddap:
             best_ddap_chromosome = current_population[0]
