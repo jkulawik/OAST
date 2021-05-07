@@ -109,18 +109,17 @@ else:
 
 # The calculations proper:
 with open(network, "r") as network_file:
+    start_time = time.time()
 
     # Get parameters from file
     links_list = oast_parser.get_links(network)
     demand_list = oast_parser.get_demands(network)
 
-    first_population = EvolutionaryAlgorithm.generate_first_population(demand_list, initial_population_size)
-    current_population = first_population
-
+    # Init population
+    current_population = EvolutionaryAlgorithm.generate_first_population(demand_list, initial_population_size)
     EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, current_population)
-
-    start_time = time.time()
     current_population.sort(key=lambda x: x.fitness_ddap, reverse=False)  # TODO change for DAP when needed
+
     # Init references for DDAP results
     best_ddap_chromosome = current_population[0]
     best_ddap_chromosomes = list()  # Trajectory
@@ -176,8 +175,7 @@ with open(network, "r") as network_file:
         if new_population[0].fitness_ddap <= best_ddap:  # TODO Change for DAP when needed
             not_improved_counter += 1
         generations_counter += 1
-        end_time = time.time()
-        time_elapsed = end_time - start_time
+        time_elapsed = time.time() - start_time
 
         # Keep n=initial_population_size best chromosomes, discard rest
         tmp = new_population[:initial_population_size]
@@ -194,7 +192,7 @@ result = Result(
     time=time_elapsed,
     population=initial_population_size,
     mutation_prob=mutation_probability,
-    crossover_prob=crossover_probability_mul,     # TODO tu moze poprostu crossover_probability
+    crossover_prob=crossover_probability_mul,     # TODO tu moze po prostu crossover_probability
     best_ddap=best_ddap,
     best_dap=best_dap
 )
