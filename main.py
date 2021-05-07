@@ -207,6 +207,5 @@ pyplot.ylabel("Best chromosome fitness")
 pyplot.title("Optimization Trajectory")
 pyplot.show()
 
-# TODO output printer in the correct format
 # TODO print best_ddap_chromosome to file
 # TODO print best_dap_chromosome to file

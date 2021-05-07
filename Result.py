@@ -18,25 +18,25 @@ class Result:
         self.best_ddap = best_ddap
         self.best_dap = best_dap
 
+    def get_strings(self):
+        strings = [
+            "Seed:\t\t\t\t\t\t{}".format(self.seed),
+            "Generations:\t\t\t\t{}".format(self.generations),
+            "Time elapsed:\t\t\t\t{}".format(self.time),
+            "Initial population size:\t{}".format(self.population),
+            "Mutation probability:\t\t{}".format(self.mutation_prob),
+            "Crossover probability:\t\t{}".format(self.crossover_prob),
+            "Best DDAP fitness:\t\t\t{}".format(self.best_ddap),
+            "Best DAP fitness:\t\t\t{}".format(self.best_dap)
+        ]
+        return strings
+
     def print(self):
-        print("Seed:\t\t\t\t\t{}\n"
-              "Generations:\t\t\t{}\n"
-              "Time elapsed:\t\t\t{}\n"
-              "Initial population size:{}\n"
-              "Mutation probability:\t{}\n"
-              "Crossover probability:\t{}\n"
-              "Best DDAP fitness:\t\t{}\n"
-              "Best DAP fitness:\t\t{}"
-              .format(self.seed,
-                      self.generations,
-                      self.time,
-                      self.population,
-                      self.mutation_prob,
-                      self.crossover_prob,
-                      self.best_ddap,
-                      self.best_dap))
+        for line in self.get_strings():
+            print(line)
 
     def file_write(self):
-        result_file = open("result.txt", "a")
-        result_file.write("cos")  # TODO nie mam pojecia jak tu zapisac tego self.printa()
+        result_file = open("results.txt", "w")
+        for line in self.get_strings():
+            result_file.write(line+"\n")
         result_file.close()

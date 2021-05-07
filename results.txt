@@ -1,0 +1,8 @@
+Seed:						16418368
+Generations:				827
+Time elapsed:				3.002000093460083
+Initial population size:	10
+Mutation probability:		0.03
+Crossover probability:		0.9
+Best DDAP fitness:			16
+Best DAP fitness:			-64
