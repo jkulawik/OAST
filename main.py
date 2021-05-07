@@ -181,10 +181,6 @@ with open(network, "r") as network_file:
         tmp = new_population[:initial_population_size]
         current_population = tmp
 
-    print("Best chromosome:\n")
-    # TODO najlepszy chromosom powinien być drukowany i zapisywany do pliku razem z resztą wyników
-    for gene in best_ddap_chromosome.list_of_genes:
-        print(gene.path_flow_list)
 
 # Loop finished: process results
 result = Result(
@@ -195,8 +191,10 @@ result = Result(
     mutation_prob=mutation_probability,
     crossover_prob=crossover_probability_mul,
     best_ddap=best_ddap,
-    best_dap=best_dap
+    best_dap=best_dap,
+    best_chromosome=best_ddap_chromosome    # TODO Change for DAP when needed
 )
+
 result.print()
 result.file_write()
 
@@ -206,6 +204,3 @@ pyplot.xlabel("Generation")
 pyplot.ylabel("Best chromosome fitness")
 pyplot.title("Optimization Trajectory")
 pyplot.show()
-
-# TODO print best_ddap_chromosome to file
-# TODO print best_dap_chromosome to file

@@ -1,3 +1,5 @@
+from Classes import Chromosome
+
 class Result:
 
     def __init__(self,
@@ -8,7 +10,8 @@ class Result:
                  mutation_prob: float,
                  crossover_prob: float,
                  best_ddap: int,
-                 best_dap: int):
+                 best_dap: int,
+                 best_chromosome: Chromosome):
         self.seed = seed
         self.generations = generations
         self.time = time
@@ -17,6 +20,8 @@ class Result:
         self.crossover_prob = crossover_prob
         self.best_ddap = best_ddap
         self.best_dap = best_dap
+        self.best_chromosome = best_chromosome
+
 
     def get_strings(self):
         strings = [
@@ -27,8 +32,11 @@ class Result:
             "Mutation probability:\t\t{}".format(self.mutation_prob),
             "Crossover probability:\t\t{}".format(self.crossover_prob),
             "Best DDAP fitness:\t\t\t{}".format(self.best_ddap),
-            "Best DAP fitness:\t\t\t{}".format(self.best_dap)
+            "Best DAP fitness:\t\t\t{}".format(self.best_dap),
+            "\nBest chromosome:"
         ]
+        for gene in self.best_chromosome.list_of_genes:
+            strings.append(str(gene.path_flow_list))
         return strings
 
     def print(self):
