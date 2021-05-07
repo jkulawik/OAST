@@ -182,7 +182,8 @@ with open(network, "r") as network_file:
         current_population = tmp
 
     print("Best chromosome:\n")
-    for gene in best_dap_chromosome.list_of_genes:
+    # TODO najlepszy chromosom powinien być drukowany i zapisywany do pliku razem z resztą wyników
+    for gene in best_ddap_chromosome.list_of_genes:
         print(gene.path_flow_list)
 
 # Loop finished: process results
@@ -192,7 +193,7 @@ result = Result(
     time=time_elapsed,
     population=initial_population_size,
     mutation_prob=mutation_probability,
-    crossover_prob=crossover_probability_mul,     # TODO tu moze po prostu crossover_probability
+    crossover_prob=crossover_probability_mul,
     best_ddap=best_ddap,
     best_dap=best_dap
 )
