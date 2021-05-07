@@ -23,7 +23,7 @@ import random
 not_improved_in_N_generations = 0
 initial_population_size = 10
 mutation_probability = 0.03
-crossover_probability_multiplier = 0.1
+crossover_probability_mul = 0.1
 seed = 4
 random.seed(seed)
 
@@ -80,7 +80,7 @@ if net_input != "s":
 
     initial_population_size = int(input("Type initial population:\t"))
     mutation_probability = float(input("Type mutation probability:\t"))
-    crossover_probability_multiplier = float(input("Type crossover probability multiplier:\t"))  # TODO moze jakos inaczej nazwac
+    crossover_probability_mul = float(input("Type crossover probability multiplier:\t"))
 
     while True:
         stop_input = input("[1] number of seconds\n"
@@ -157,7 +157,7 @@ with open(network, "r") as network_file:
             best_dap_generations.append(generations_counter)
             best_dap_list.append(best_dap_chromosome.fitness_dap)
 
-        new_population = EvolutionaryAlgorithm.crossover_chromosomes(current_population, current_ddap, crossover_probability_multiplier)
+        new_population = EvolutionaryAlgorithm.crossover_chromosomes(current_population, current_ddap, crossover_probability_mul)
         for chromosome in new_population:
             EvolutionaryAlgorithm.mutate_chromosome(chromosome, float(mutation_probability))
             mutations_counter += 1
@@ -187,7 +187,7 @@ result = Result(
     time=float(time_elapsed),
     population=int(initial_population_size),
     mutation_prob=float(mutation_probability),
-    crossover_prob=float(crossover_probability_multiplier),     # TODO tu moze poprostu crossover_probability
+    crossover_prob=float(crossover_probability_mul),     # TODO tu moze poprostu crossover_probability
     best_ddap=int(best_ddap),
     best_dap=int(best_dap)
 )
