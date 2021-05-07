@@ -78,7 +78,7 @@ def mutate_chromosome(chromosome: Chromosome, mutation_probability: float):
 
 # Crossover exchanges genes between two parent chromosomes to produce two offspring
 # A new population is generated; it includes the old population and all offspring.
-def crossover_chromosomes(original_population, biggest_ddap: float, multiplier):
+def crossover_chromosomes(original_population, biggest_ddap: float, multiplier: float):
     # Firstly, list is filled with parent chromosomes
     new_population = list(original_population)
 

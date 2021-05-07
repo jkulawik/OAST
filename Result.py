@@ -1,6 +1,14 @@
 class Result:
 
-    def __init__(self, seed, generations, time, population, mutation_prob, crossover_prob, best_ddap, best_dap):
+    def __init__(self,
+                 seed: int,
+                 generations: int,
+                 time: float,
+                 population: int,
+                 mutation_prob: float,
+                 crossover_prob: float,
+                 best_ddap: int,
+                 best_dap: int):
         self.seed = seed
         self.generations = generations
         self.time = time
@@ -30,5 +38,5 @@ class Result:
 
     def file_write(self):
         result_file = open("result.txt", "a")
-        result_file.write("cos") # TODO nie mam pojecia jak tu zapisac tego self.printa()
+        result_file.write("cos")  # TODO nie mam pojecia jak tu zapisac tego self.printa()
         result_file.close()

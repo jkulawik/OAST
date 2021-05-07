@@ -157,9 +157,13 @@ with open(network, "r") as network_file:
             best_dap_generations.append(generations_counter)
             best_dap_list.append(best_dap_chromosome.fitness_dap)
 
-        new_population = EvolutionaryAlgorithm.crossover_chromosomes(current_population, current_ddap, crossover_probability_mul)
+        new_population = EvolutionaryAlgorithm.crossover_chromosomes(
+            current_population,
+            current_ddap,
+            crossover_probability_mul)
+
         for chromosome in new_population:
-            EvolutionaryAlgorithm.mutate_chromosome(chromosome, float(mutation_probability))
+            EvolutionaryAlgorithm.mutate_chromosome(chromosome, mutation_probability)
             mutations_counter += 1
 
         EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, new_population)
@@ -182,14 +186,14 @@ with open(network, "r") as network_file:
 
 # Loop finished: process results
 result = Result(
-    seed=int(seed),
-    generations=int(generations_counter),
-    time=float(time_elapsed),
-    population=int(initial_population_size),
-    mutation_prob=float(mutation_probability),
-    crossover_prob=float(crossover_probability_mul),     # TODO tu moze poprostu crossover_probability
-    best_ddap=int(best_ddap),
-    best_dap=int(best_dap)
+    seed=seed,
+    generations=generations_counter,
+    time=time_elapsed,
+    population=initial_population_size,
+    mutation_prob=mutation_probability,
+    crossover_prob=crossover_probability_mul,     # TODO tu moze poprostu crossover_probability
+    best_ddap=best_ddap,
+    best_dap=best_dap
 )
 result.print()
 result.file_write()
