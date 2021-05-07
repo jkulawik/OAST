@@ -23,8 +23,8 @@ import random
 not_improved_in_N_generations = 0
 initial_population_size = 10
 mutation_probability = 0.03
-crossover_probability_mul = 0.1
-seed = 4
+crossover_probability_mul = 0.9
+seed = 16418368
 random.seed(seed)
 
 network = "nets/net4.txt"
@@ -157,16 +157,19 @@ with open(network, "r") as network_file:
             best_dap_generations.append(generations_counter)
             best_dap_list.append(best_dap_chromosome.fitness_dap)
 
+        # Crossover and recalc fitness'
         new_population = EvolutionaryAlgorithm.crossover_chromosomes(
             current_population,
             current_ddap,
             crossover_probability_mul)
+        EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, new_population)
 
+        # Mutate and recalc fitness'
         for chromosome in new_population:
             EvolutionaryAlgorithm.mutate_chromosome(chromosome, mutation_probability)
             mutations_counter += 1
-
         EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, new_population)
+
         new_population.sort(key=lambda x: x.fitness_ddap, reverse=False)  # TODO change for DAP when needed
 
         # Calculate the remaining counters:
