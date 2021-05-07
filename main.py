@@ -1,5 +1,6 @@
 import math
 from matplotlib import pyplot
+from Result import Result
 import oast_parser
 import EvolutionaryAlgorithm
 import time
@@ -28,8 +29,8 @@ seed = 4
 random.seed(seed)
 
 # counters
-time_elapsed = 0
 generations_counter = 0
+time_elapsed = 0
 mutations_counter = 0
 not_improved_counter = 0
 
@@ -67,6 +68,7 @@ while True:
         network = "nets/net4.txt"
         initial_population_size = 10
         mutation_probability = 0.03
+        crossover_probability = 0.1
         stop_input = "1"
         max_number_of_seconds = 3
         break
@@ -74,8 +76,10 @@ while True:
         print("You have to choose number 1-3 or 's'!")
 
 if net_input != "s":
+
     initial_population_size = int(input("Type initial population:\t"))
     mutation_probability = input("Type mutation probability:\t")
+    crossover_probability = 0.1     # TODO init to display
 
     while True:
         stop_input = input("[1] number of seconds\n"
@@ -145,7 +149,7 @@ with open(network, "r") as network_file:
         # Current parameters
         current_ddap = current_population[0].fitness_ddap
         current_dap = current_population[0].fitness_dap
-        print("Current DDAP fitness: ", current_ddap)
+        #print("Current DDAP fitness: ", current_ddap)
 
         if current_ddap < best_ddap:
             best_ddap_chromosome = current_population[0]
@@ -179,9 +183,23 @@ with open(network, "r") as network_file:
         tmp = new_population[:initial_population_size]
         current_population = tmp
 
+    print("Best chromosome:\n")
+    for gene in best_dap_chromosome.list_of_genes:
+        print(gene.path_flow_list)
+
 # Loop finished: process results
-print("Best DDAP fitness: ", best_ddap)
-print("Best DAP fitness: ", best_dap)
+result = Result(
+    seed=int(seed),
+    generations=int(generations_counter),
+    time=float(time_elapsed),
+    population=int(initial_population_size),
+    mutation_prob=float(mutation_probability),
+    crossover_prob=float(crossover_probability),
+    best_ddap=int(best_ddap),
+    best_dap=int(best_dap)
+)
+result.print()
+result.file_write()
 
 # Graph
 pyplot.plot(best_ddap_generations, best_ddap_list, 'o-g')  # TODO Change for DAP when needed
