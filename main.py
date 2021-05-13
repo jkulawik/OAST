@@ -28,10 +28,10 @@ crossover_probability_mul = 0.9
 seed = 16418368
 random.seed(seed)
 
-EvolutionaryAlgorithm.algorithm = "DDAP"
+EvolutionaryAlgorithm.algorithm = "DAP"
 network = "nets/net4.txt"
 stop_input = "1"
-max_number_of_seconds = 3
+max_number_of_seconds = 10
 max_number_of_generations = 20
 max_number_of_mutations = 100
 max_unimproved_generations = 10

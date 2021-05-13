@@ -85,9 +85,17 @@ def crossover_chromosomes(original_population, biggest_fitness: float, multiplie
 
     # Remove 2 parents from the original population until less than 2 left
     while len(original_population) >= 2:
-        first_parent_score = original_population[0].fitness_ddap/biggest_fitness*multiplier  # TODO change for DAP when needed
+        if algorithm == "DDAP":
+            first_parent_score = original_population[0].fitness_ddap
+            second_parent_score = original_population[1].fitness_ddap
+        else:
+            first_parent_score = original_population[0].fitness_dap
+            second_parent_score = original_population[1].fitness_dap
+
+        first_parent_score = first_parent_score/biggest_fitness*multiplier
+        second_parent_score = second_parent_score/biggest_fitness*multiplier
+
         first_parent_genes = original_population.pop(0).list_of_genes
-        second_parent_score = original_population[0].fitness_ddap/biggest_fitness*multiplier  # TODO change for DAP when needed
         second_parent_genes = original_population.pop(0).list_of_genes
 
         # Crossover prob. is determined by parents' fitness

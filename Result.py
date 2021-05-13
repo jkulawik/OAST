@@ -1,3 +1,4 @@
+import EvolutionaryAlgorithm
 from Classes import Chromosome
 
 
@@ -34,7 +35,7 @@ class Result:
             "Time elapsed:\t\t\t\t{}".format(self.time),
             "Initial population size:\t{}".format(self.population),
             "Mutation probability:\t\t{}".format(self.mutation_prob),
-            "Crossover probability multiplier:\t\t{}".format(self.crossover_prob),
+            "Crossover prob. mult.:\t\t{}".format(self.crossover_prob),
             "Best DDAP fitness:\t\t\t{}".format(self.best_ddap),
             "Best DAP fitness:\t\t\t{}".format(self.best_dap),
             "\nBest chromosome:"
@@ -54,7 +55,7 @@ class Result:
             print(line)
 
     def file_write(self):
-        result_file = open("results.txt", "w")
+        result_file = open("results_"+EvolutionaryAlgorithm.algorithm+".txt", "w")
         for line in self.get_strings():
             result_file.write(line+"\n")
         result_file.close()
