@@ -28,7 +28,7 @@ crossover_probability_mul = 0.9
 seed = 16418368
 random.seed(seed)
 
-EvolutionaryAlgorithm.algorithm = "DAP"
+EvolutionaryAlgorithm.algorithm = "DDAP"
 network = "nets/net4.txt"
 stop_input = "1"
 max_number_of_seconds = 10
@@ -57,6 +57,8 @@ def check_if_stop(elapsed_time, generations, mutations, unimproved_generations):
 # "MAIN":
 
 # Input phase
+# TODO pick DDAP or DAP
+
 while True:
     net_input = input("[1] net4.txt\n"
                       "[2] net12_1.txt\n"
