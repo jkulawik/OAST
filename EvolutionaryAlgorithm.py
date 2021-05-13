@@ -143,6 +143,29 @@ def calculate_fitness(links, demands, population):
         chromosome.fitness_dap = max(f)
 
 
+# Calculate link loads for the given chromosome
+def get_link_loads(chromosome, links, demands):
+    number_of_links = len(links)
+    l = [0] * number_of_links  # Init link load list with zeros
+
+    for d in range(len(chromosome.list_of_genes)):
+        for p in range(len(chromosome.list_of_genes[d].path_flow_list)):
+            for e in range(len(links)):
+                # Path flow if the edge partakes in the given demand path; else a zero takes the place
+                if check_link_in_demand(e + 1, demands[d], p):
+                    l[e] += chromosome.list_of_genes[d].path_flow_list[p]
+    return l
+
+
+# Calculate link sizes from link loads
+def get_link_sizes(link_loads, links):
+    number_of_links = len(links)
+    y = [0] * number_of_links  # Init link sizes list with zeros
+    for e in range(len(links)):
+        y[e] = ceil(link_loads[e] / links[e].link_module)
+    return y
+
+
 # Check if given link is in a given demand path
 def check_link_in_demand(link, demand, path_num):
     demand_path = demand.list_of_demand_paths[path_num]

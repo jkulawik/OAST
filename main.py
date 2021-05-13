@@ -183,6 +183,10 @@ with open(network, "r") as network_file:
 
 
 # Loop finished: process results
+best_chromosome = best_ddap_chromosome  # TODO Change for DAP when needed
+link_loads = EvolutionaryAlgorithm.get_link_loads(best_chromosome, links_list, demand_list)
+link_sizes = EvolutionaryAlgorithm.get_link_sizes(link_loads, links_list)
+
 result = Result(
     seed=seed,
     generations=generations_counter,
@@ -192,11 +196,14 @@ result = Result(
     crossover_prob=crossover_probability_mul,
     best_ddap=best_ddap,
     best_dap=best_dap,
-    best_chromosome=best_ddap_chromosome    # TODO Change for DAP when needed
+    best_chromosome=best_chromosome,
+    link_load_list=link_loads,
+    link_size_list=link_sizes
 )
 
 result.print()
 result.file_write()
+
 
 # Graph
 pyplot.plot(best_ddap_generations, best_ddap_list, 'o-g')  # TODO Change for DAP when needed
