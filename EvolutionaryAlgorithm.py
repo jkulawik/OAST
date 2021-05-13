@@ -44,7 +44,6 @@ def generate_first_population(list_of_demands, population_size: int):
 # Mutation perturbs the values of the chromosome genes with a certain low probability
 def mutate_chromosome(chromosome: Chromosome, mutation_probability: float):
 
-    #mutation_probability = check_probability(mutation_probability, DEFAULT_MUTATION_PROBABILITY)
     if not 0 <= mutation_probability <= 1:
         mutation_probability = DEFAULT_MUTATION_PROBABILITY
 
@@ -170,14 +169,6 @@ def get_link_sizes(link_loads, links):
 def check_link_in_demand(link, demand, path_num):
     demand_path = demand.list_of_demand_paths[path_num]
     return str(link) in demand_path.link_id_list
-
-
-# Check if possibility is in range between 0 and 1
-def check_probability(probability: float, default: float):
-    if not 0 <= probability <= 1:
-        return default
-    else:
-        return probability
 
 
 def get_random_bool(probability: float):
