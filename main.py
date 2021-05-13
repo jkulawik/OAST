@@ -5,6 +5,7 @@ import oast_parser
 import EvolutionaryAlgorithm
 import time
 import random
+from Classes import Chromosome
 
 # DAP: find allocation of path flows that minimizes the max load function.
 # link capacity = link module * number of modules
@@ -27,6 +28,7 @@ crossover_probability_mul = 0.9
 seed = 16418368
 random.seed(seed)
 
+EvolutionaryAlgorithm.algorithm = "DDAP"
 network = "nets/net4.txt"
 stop_input = "1"
 max_number_of_seconds = 3
@@ -118,48 +120,65 @@ with open(network, "r") as network_file:
     # Init population
     current_population = EvolutionaryAlgorithm.generate_first_population(demand_list, initial_population_size)
     EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, current_population)
-    current_population.sort(key=lambda x: x.fitness_ddap, reverse=False)  # TODO change for DAP when needed
+    # Sort population
+    if EvolutionaryAlgorithm.algorithm == "DDAP":
+        current_population.sort(key=lambda x: x.fitness_ddap, reverse=False)
+    else:
+        current_population.sort(key=lambda x: x.fitness_dap, reverse=False)
 
     # Init references for DDAP results
     best_ddap_chromosome = current_population[0]
     best_ddap_chromosomes = list()  # Trajectory
     best_ddap_chromosomes.append(best_ddap_chromosome)
     best_ddap = math.inf
-    # For trajectory graph:
-    best_ddap_list = list()
-    best_ddap_generations = list()  # X values for graph
 
     # Init references for DAP results
     best_dap_chromosome = current_population[0]
     best_dap_chromosomes = list()  # Trajectory
     best_dap_chromosomes.append(best_dap_chromosome)
     best_dap = math.inf
+
     # For trajectory graph:
-    best_dap_list = list()
-    best_dap_generations = list()  # X values for graph
+    best_fitness_list = list()
+    best_generations = list()  # X values for graph
+
+    # Stores the prioritised fitness
+    current_fitness = 0
+    best_fitness = 0
 
     while check_if_stop(time_elapsed, generations_counter, mutations_counter, not_improved_counter):
-        # Current parameters
-        current_ddap = current_population[0].fitness_ddap
-        current_dap = current_population[0].fitness_dap
+        # Pick which fitness to prioritise based on chosen algorithm, then recalc the relevant parameters
+        if EvolutionaryAlgorithm.algorithm == "DDAP":
+            current_ddap = current_population[0].fitness_ddap
 
-        if current_ddap < best_ddap:
-            best_ddap_chromosome = current_population[0]
-            best_ddap = current_population[0].fitness_ddap
-            best_ddap_chromosomes.append(best_ddap_chromosome)
-            best_ddap_generations.append(generations_counter)
-            best_ddap_list.append(best_ddap_chromosome.fitness_ddap)
-        if current_dap < best_dap:
-            best_dap_chromosome = current_population[0]
-            best_dap = current_population[0].fitness_dap
-            best_dap_chromosomes.append(best_dap_chromosome)
-            best_dap_generations.append(generations_counter)
-            best_dap_list.append(best_dap_chromosome.fitness_dap)
+            if current_ddap < best_ddap:
+                best_ddap_chromosome = current_population[0]
+                best_ddap = current_population[0].fitness_ddap
+                best_ddap_chromosomes.append(best_ddap_chromosome)
+                # Store trajectory
+                best_generations.append(generations_counter)
+                best_fitness_list.append(best_ddap_chromosome.fitness_ddap)
+
+            current_fitness = current_ddap
+            best_fitness = best_ddap
+        else:  # DAP
+            current_dap = current_population[0].fitness_dap
+
+            if current_dap < best_dap:
+                best_dap_chromosome = current_population[0]
+                best_dap = current_population[0].fitness_dap
+                best_dap_chromosomes.append(best_dap_chromosome)
+                # Store trajectory
+                best_generations.append(generations_counter)
+                best_fitness_list.append(best_dap_chromosome.fitness_dap)
+
+            current_fitness = current_dap
+            best_fitness = best_dap
 
         # Crossover and recalc fitness'
         new_population = EvolutionaryAlgorithm.crossover_chromosomes(
             current_population,
-            current_ddap,
+            current_fitness,
             crossover_probability_mul)
         EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, new_population)
 
@@ -169,11 +188,19 @@ with open(network, "r") as network_file:
             mutations_counter += 1
         EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, new_population)
 
-        new_population.sort(key=lambda x: x.fitness_ddap, reverse=False)  # TODO change for DAP when needed
+        # Sort population
+        if EvolutionaryAlgorithm.algorithm == "DDAP":
+            new_population.sort(key=lambda x: x.fitness_ddap, reverse=False)
+        else:
+            new_population.sort(key=lambda x: x.fitness_dap, reverse=False)
 
         # Calculate the remaining counters:
-        if new_population[0].fitness_ddap <= best_ddap:  # TODO Change for DAP when needed
-            not_improved_counter += 1
+        if EvolutionaryAlgorithm.algorithm == "DDAP":
+            if new_population[0].fitness_ddap <= best_ddap:
+                not_improved_counter += 1
+        else:
+            if new_population[0].fitness_dap <= best_dap:
+                not_improved_counter += 1
         generations_counter += 1
         time_elapsed = time.time() - start_time
 
@@ -181,9 +208,13 @@ with open(network, "r") as network_file:
         tmp = new_population[:initial_population_size]
         current_population = tmp
 
-
 # Loop finished: process results
-best_chromosome = best_ddap_chromosome  # TODO Change for DAP when needed
+best_chromosome: Chromosome
+if EvolutionaryAlgorithm.algorithm == "DDAP":
+    best_chromosome = best_ddap_chromosome
+else:
+    best_chromosome = best_dap_chromosome
+
 link_loads = EvolutionaryAlgorithm.get_link_loads(best_chromosome, links_list, demand_list)
 link_sizes = EvolutionaryAlgorithm.get_link_sizes(link_loads, links_list)
 
@@ -206,8 +237,8 @@ result.file_write()
 
 
 # Graph
-pyplot.plot(best_ddap_generations, best_ddap_list, 'o-g')  # TODO Change for DAP when needed
+pyplot.plot(best_generations, best_fitness_list, 'o-g')
 pyplot.xlabel("Generation")
 pyplot.ylabel("Best chromosome fitness")
-pyplot.title("Optimization Trajectory")
+pyplot.title("Optimization Trajectory - "+EvolutionaryAlgorithm.algorithm)
 pyplot.show()
