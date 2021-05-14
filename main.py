@@ -32,7 +32,7 @@ random.seed(seed)
 EvolutionaryAlgorithm.algorithm = "DDAP"
 network = "nets/net4.txt"
 stop_input = "1"
-max_number_of_seconds = 10
+max_number_of_seconds = 5
 max_number_of_generations = 20
 max_number_of_mutations = 100
 max_unimproved_generations = 10
@@ -136,20 +136,19 @@ with open(network, "r") as network_file:
     current_population = EvolutionaryAlgorithm.generate_first_population(demand_list, initial_population_size)
     EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, current_population)
 
-
     # Sort population
     if EvolutionaryAlgorithm.algorithm == "DDAP":
         current_population.sort(key=lambda x: x.fitness_ddap, reverse=False)
     else:
         current_population.sort(key=lambda x: x.fitness_dap, reverse=False)
 
+    # TODO remove debug prints
     for i in current_population:
         print("Current chromosome genes:\n")
         for gene in i.list_of_genes:
             print(gene.path_flow_list)
         print("DAP:" + str(i.fitness_dap))
         print("DDAP:" + str(i.fitness_ddap))
-
 
     # Init references for DDAP results
     best_ddap_chromosome = current_population[0]
@@ -218,7 +217,7 @@ with open(network, "r") as network_file:
             current_population,
             current_fitness,
             crossover_probability_mul)
-        #EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, new_population)
+        EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, new_population)
 
         # Mutate and recalc fitness'
         for chromosome in new_population:
@@ -226,13 +225,13 @@ with open(network, "r") as network_file:
             mutations_counter += 1
         EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, new_population)
 
+        # TODO remove debug prints
         for i in current_population:
            print("Current chromosome genes:\n")
            for gene in i.list_of_genes:
                print(gene.path_flow_list)
            print("DAP:" + str(i.fitness_dap))
            print("DDAP:" + str(i.fitness_ddap))
-
 
         # Sort population
         if EvolutionaryAlgorithm.algorithm == "DDAP":
@@ -254,6 +253,7 @@ with open(network, "r") as network_file:
         tmp = new_population[:initial_population_size]
         current_population = tmp
 
+print("\n")  # Print new line to separate results from the loading animation
 # Loop finished: process results
 best_chromosome: Chromosome
 if EvolutionaryAlgorithm.algorithm == "DDAP":
@@ -281,7 +281,7 @@ result = Result(
 result.print()
 result.file_write()
 
-
+# TODO uncomment this
 # Graph
 #pyplot.plot(best_generations, best_fitness_list, 'o-g')
 #pyplot.xlabel("Generation")
