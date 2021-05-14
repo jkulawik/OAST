@@ -50,12 +50,17 @@ def mutate_chromosome(chromosome: Chromosome, mutation_probability: float):
         mutation_probability = DEFAULT_MUTATION_PROBABILITY
 
     for gene in chromosome.list_of_genes:
+
         # For each gene on the list, decide if mutation will be performed
         # Mutation = move 1 unit between 2 path flows in a gene
         if get_random_bool(mutation_probability):
             number_of_path_flows = len(gene.path_flow_list)
 
-            # Randomly select 2 genes to mutate
+            if number_of_path_flows == 1:
+                # Avoids a soft-lock (can't mutate a path flow with itself)
+                continue
+
+            # Randomly select 2 path flows to mutate
             first_path_flow_id = random.randint(0, number_of_path_flows - 1)
             second_path_flow_id = random.randint(0, number_of_path_flows - 1)
 
