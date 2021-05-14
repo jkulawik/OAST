@@ -30,9 +30,9 @@ seed = 16418368
 random.seed(seed)
 
 EvolutionaryAlgorithm.algorithm = "DDAP"
-network = "nets/net12_1.txt"
+network = "nets/net4.txt"
 stop_input = "1"
-max_number_of_seconds = 5
+max_number_of_seconds = 10
 max_number_of_generations = 20
 max_number_of_mutations = 100
 max_unimproved_generations = 10
@@ -62,7 +62,7 @@ def check_if_stop(elapsed_time, generations, mutations, unimproved_generations):
 while True:
     algorithm_input = input("[1] DAP (Demand Allocation Problem)\n"
                             "[2] DDAP (Dimensioning and Demand Allocation Problem)\n"
-                            "Choose problem, which you want to solve:\t")
+                            "Choose the problem which you want to solve:\t")
     if algorithm_input == "1":
         EvolutionaryAlgorithm.algorithm = "DAP"
         break
@@ -259,7 +259,8 @@ result = Result(
     best_dap=best_dap,
     best_chromosome=best_chromosome,
     link_load_list=link_loads,
-    link_size_list=link_sizes
+    link_size_list=link_sizes,
+    network=network
 )
 
 result.print()
@@ -269,5 +270,5 @@ result.file_write()
 pyplot.plot(best_generations, best_fitness_list, 'o-g')
 pyplot.xlabel("Generation")
 pyplot.ylabel("Best chromosome fitness")
-pyplot.title("Optimization Trajectory - "+EvolutionaryAlgorithm.algorithm)
+pyplot.title(EvolutionaryAlgorithm.algorithm+" Optimization Trajectory for "+network)
 pyplot.show()
