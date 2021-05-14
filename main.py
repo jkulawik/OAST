@@ -57,7 +57,19 @@ def check_if_stop(elapsed_time, generations, mutations, unimproved_generations):
 # "MAIN":
 
 # Input phase
-# TODO pick DDAP or DAP
+
+while True:
+    algorithm_input = input("[1] DAP (Demand Allocation Problem)\n"
+                            "[2] DDAP (Dimensioning and Demand Allocation Problem)\n"
+                            "Choose problem, which you want to solve:\t")
+    if algorithm_input == "1":
+        EvolutionaryAlgorithm.algorithm = "DAP"
+        break
+    elif algorithm_input == "2":
+        EvolutionaryAlgorithm.algorithm = "DDAP"
+        break
+    else:
+        print("You have to choose number 1 or 2!")
 
 while True:
     net_input = input("[1] net4.txt\n"
@@ -122,11 +134,21 @@ with open(network, "r") as network_file:
     # Init population
     current_population = EvolutionaryAlgorithm.generate_first_population(demand_list, initial_population_size)
     EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, current_population)
+
+
     # Sort population
     if EvolutionaryAlgorithm.algorithm == "DDAP":
         current_population.sort(key=lambda x: x.fitness_ddap, reverse=False)
     else:
         current_population.sort(key=lambda x: x.fitness_dap, reverse=False)
+
+    for i in current_population:
+        print("Current chromosome genes:\n")
+        for gene in i.list_of_genes:
+            print(gene.path_flow_list)
+        print("DAP:" + str(i.fitness_dap))
+        print("DDAP:" + str(i.fitness_ddap))
+
 
     # Init references for DDAP results
     best_ddap_chromosome = current_population[0]
@@ -182,13 +204,21 @@ with open(network, "r") as network_file:
             current_population,
             current_fitness,
             crossover_probability_mul)
-        EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, new_population)
+        #EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, new_population)
 
         # Mutate and recalc fitness'
         for chromosome in new_population:
             EvolutionaryAlgorithm.mutate_chromosome(chromosome, mutation_probability)
             mutations_counter += 1
         EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, new_population)
+
+        for i in current_population:
+           print("Current chromosome genes:\n")
+           for gene in i.list_of_genes:
+               print(gene.path_flow_list)
+           print("DAP:" + str(i.fitness_dap))
+           print("DDAP:" + str(i.fitness_ddap))
+
 
         # Sort population
         if EvolutionaryAlgorithm.algorithm == "DDAP":
@@ -239,8 +269,8 @@ result.file_write()
 
 
 # Graph
-pyplot.plot(best_generations, best_fitness_list, 'o-g')
-pyplot.xlabel("Generation")
-pyplot.ylabel("Best chromosome fitness")
-pyplot.title("Optimization Trajectory - "+EvolutionaryAlgorithm.algorithm)
-pyplot.show()
+#pyplot.plot(best_generations, best_fitness_list, 'o-g')
+#pyplot.xlabel("Generation")
+#pyplot.ylabel("Best chromosome fitness")
+#pyplot.title("Optimization Trajectory - "+EvolutionaryAlgorithm.algorithm)
+#pyplot.show()
