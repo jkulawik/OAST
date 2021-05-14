@@ -30,7 +30,7 @@ seed = 16418368
 random.seed(seed)
 
 EvolutionaryAlgorithm.algorithm = "DDAP"
-network = "nets/net4.txt"
+network = "nets/net12_1.txt"
 stop_input = "1"
 max_number_of_seconds = 5
 max_number_of_generations = 20
@@ -142,14 +142,6 @@ with open(network, "r") as network_file:
     else:
         current_population.sort(key=lambda x: x.fitness_dap, reverse=False)
 
-    # TODO remove debug prints
-    for i in current_population:
-        print("Current chromosome genes:\n")
-        for gene in i.list_of_genes:
-            print(gene.path_flow_list)
-        print("DAP:" + str(i.fitness_dap))
-        print("DDAP:" + str(i.fitness_ddap))
-
     # Init references for DDAP results
     best_ddap_chromosome = current_population[0]
     best_ddap_chromosomes = list()  # Trajectory
@@ -170,13 +162,13 @@ with open(network, "r") as network_file:
     current_fitness = 0
     best_fitness = 0
 
-    x = 0
+    n = 0
     loading = "."
     while check_if_stop(time_elapsed, generations_counter, mutations_counter, not_improved_counter):
         # Loading animation
-        x += 1
-        x %= 50
-        if x > 0:
+        n += 1
+        n %= 50
+        if n > 0:
             loading += "."
         else:
             loading = "."
@@ -224,14 +216,6 @@ with open(network, "r") as network_file:
             EvolutionaryAlgorithm.mutate_chromosome(chromosome, mutation_probability)
             mutations_counter += 1
         EvolutionaryAlgorithm.calculate_fitness(links_list, demand_list, new_population)
-
-        # TODO remove debug prints
-        for i in current_population:
-           print("Current chromosome genes:\n")
-           for gene in i.list_of_genes:
-               print(gene.path_flow_list)
-           print("DAP:" + str(i.fitness_dap))
-           print("DDAP:" + str(i.fitness_ddap))
 
         # Sort population
         if EvolutionaryAlgorithm.algorithm == "DDAP":
@@ -281,10 +265,9 @@ result = Result(
 result.print()
 result.file_write()
 
-# TODO uncomment this
 # Graph
-#pyplot.plot(best_generations, best_fitness_list, 'o-g')
-#pyplot.xlabel("Generation")
-#pyplot.ylabel("Best chromosome fitness")
-#pyplot.title("Optimization Trajectory - "+EvolutionaryAlgorithm.algorithm)
-#pyplot.show()
+pyplot.plot(best_generations, best_fitness_list, 'o-g')
+pyplot.xlabel("Generation")
+pyplot.ylabel("Best chromosome fitness")
+pyplot.title("Optimization Trajectory - "+EvolutionaryAlgorithm.algorithm)
+pyplot.show()
