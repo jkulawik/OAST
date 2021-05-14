@@ -1,3 +1,7 @@
+import EvolutionaryAlgorithm
+from Classes import Chromosome
+
+
 class Result:
 
     def __init__(self,
@@ -8,7 +12,11 @@ class Result:
                  mutation_prob: float,
                  crossover_prob: float,
                  best_ddap: int,
-                 best_dap: int):
+                 best_dap: int,
+                 best_chromosome: Chromosome,
+                 link_load_list,
+                 link_size_list,
+                 network):
         self.seed = seed
         self.generations = generations
         self.time = time
@@ -17,26 +25,40 @@ class Result:
         self.crossover_prob = crossover_prob
         self.best_ddap = best_ddap
         self.best_dap = best_dap
+        self.best_chromosome = best_chromosome
+        self.link_load_list = link_load_list
+        self.link_size_list = link_size_list
+        self.network = network
+
+    def get_strings(self):
+        strings = [
+            "Network:\t\t\t\t\t{}".format(self.network),
+            "Seed:\t\t\t\t\t\t{}".format(self.seed),
+            "Generations:\t\t\t\t{}".format(self.generations),
+            "Time elapsed:\t\t\t\t{}".format(self.time),
+            "Initial population size:\t{}".format(self.population),
+            "Mutation probability:\t\t{}".format(self.mutation_prob),
+            "Crossover prob. mult.:\t\t{}".format(self.crossover_prob),
+            "Best DDAP fitness:\t\t\t{}".format(self.best_ddap),
+            "Best DAP fitness:\t\t\t{}".format(self.best_dap),
+            "\nBest chromosome:"
+        ]
+        d = 0
+        for gene in self.best_chromosome.list_of_genes:
+            d += 1
+            strings.append("Demand {}: {}".format(d, str(gene.path_flow_list)))
+        strings.append("Link loads (\"number of signals\"):")
+        strings.append(str(self.link_load_list))
+        strings.append("Link sizes (\"number of fibers\"):")
+        strings.append(str(self.link_size_list))
+        return strings
 
     def print(self):
-        print("Seed:\t\t\t\t\t{}\n"
-              "Generations:\t\t\t{}\n"
-              "Time elapsed:\t\t\t{}\n"
-              "Initial population size:{}\n"
-              "Mutation probability:\t{}\n"
-              "Crossover probability:\t{}\n"
-              "Best DDAP fitness:\t\t{}\n"
-              "Best DAP fitness:\t\t{}"
-              .format(self.seed,
-                      self.generations,
-                      self.time,
-                      self.population,
-                      self.mutation_prob,
-                      self.crossover_prob,
-                      self.best_ddap,
-                      self.best_dap))
+        for line in self.get_strings():
+            print(line)
 
     def file_write(self):
-        result_file = open("result.txt", "a")
-        result_file.write("cos")  # TODO nie mam pojecia jak tu zapisac tego self.printa()
+        result_file = open("results_"+EvolutionaryAlgorithm.algorithm+".txt", "w")
+        for line in self.get_strings():
+            result_file.write(line+"\n")
         result_file.close()

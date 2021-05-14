@@ -1,0 +1,20 @@
+Seed:						16418368
+Generations:				329
+Time elapsed:				5.008627414703369
+Initial population size:	123
+Mutation probability:		0.4
+Crossover prob. mult.:		0.4
+Best DDAP fitness:			15
+Best DAP fitness:			inf
+
+Best chromosome:
+Demand 1: [1, 0, 2]
+Demand 2: [1, 0, 3]
+Demand 3: [4, 1]
+Demand 4: [1, 0, 1]
+Demand 5: [1, 1, 1]
+Demand 6: [1, 1, 2]
+Link loads ("number of signals"):
+[11, 7, 3, 14, 10]
+Link sizes ("number of fibers"):
+[6, 4, 2, 7, 5]

@@ -6,6 +6,8 @@ DEFAULT_POPULATION_SIZE = 10
 DEFAULT_MUTATION_PROBABILITY = 0.01
 OFFSPRING_FROM_PARENT_PROBABILITY = 0.5
 
+algorithm = ""
+
 
 def generate_chromosome(list_of_demands):
     list_of_genes = list()  # Empty list for appending Genes
@@ -44,17 +46,21 @@ def generate_first_population(list_of_demands, population_size: int):
 # Mutation perturbs the values of the chromosome genes with a certain low probability
 def mutate_chromosome(chromosome: Chromosome, mutation_probability: float):
 
-    #mutation_probability = check_probability(mutation_probability, DEFAULT_MUTATION_PROBABILITY)
     if not 0 <= mutation_probability <= 1:
         mutation_probability = DEFAULT_MUTATION_PROBABILITY
 
     for gene in chromosome.list_of_genes:
+
         # For each gene on the list, decide if mutation will be performed
         # Mutation = move 1 unit between 2 path flows in a gene
         if get_random_bool(mutation_probability):
             number_of_path_flows = len(gene.path_flow_list)
 
-            # Randomly select 2 genes to mutate
+            if number_of_path_flows == 1:
+                # Avoids a soft-lock (can't mutate a path flow with itself)
+                continue
+
+            # Randomly select 2 path flows to mutate
             first_path_flow_id = random.randint(0, number_of_path_flows - 1)
             second_path_flow_id = random.randint(0, number_of_path_flows - 1)
 
@@ -78,15 +84,23 @@ def mutate_chromosome(chromosome: Chromosome, mutation_probability: float):
 
 # Crossover exchanges genes between two parent chromosomes to produce two offspring
 # A new population is generated; it includes the old population and all offspring.
-def crossover_chromosomes(original_population, biggest_ddap: float, multiplier: float):
+def crossover_chromosomes(original_population, biggest_fitness: float, multiplier: float):
     # Firstly, list is filled with parent chromosomes
     new_population = list(original_population)
 
     # Remove 2 parents from the original population until less than 2 left
     while len(original_population) >= 2:
-        first_parent_score = original_population[0].fitness_ddap/biggest_ddap*multiplier  # TODO change for DAP when needed
+        if algorithm == "DDAP":
+            first_parent_score = original_population[0].fitness_ddap
+            second_parent_score = original_population[1].fitness_ddap
+        else:
+            first_parent_score = original_population[0].fitness_dap
+            second_parent_score = original_population[1].fitness_dap
+
+        first_parent_score = first_parent_score/biggest_fitness*multiplier
+        second_parent_score = second_parent_score/biggest_fitness*multiplier
+
         first_parent_genes = original_population.pop(0).list_of_genes
-        second_parent_score = original_population[0].fitness_ddap/biggest_ddap*multiplier  # TODO change for DAP when needed
         second_parent_genes = original_population.pop(0).list_of_genes
 
         # Crossover prob. is determined by parents' fitness
@@ -143,18 +157,33 @@ def calculate_fitness(links, demands, population):
         chromosome.fitness_dap = max(f)
 
 
+# Calculate link loads for the given chromosome
+def get_link_loads(chromosome, links, demands):
+    number_of_links = len(links)
+    l = [0] * number_of_links  # Init link load list with zeros
+
+    for d in range(len(chromosome.list_of_genes)):
+        for p in range(len(chromosome.list_of_genes[d].path_flow_list)):
+            for e in range(len(links)):
+                # Path flow if the edge partakes in the given demand path; else a zero takes the place
+                if check_link_in_demand(e + 1, demands[d], p):
+                    l[e] += chromosome.list_of_genes[d].path_flow_list[p]
+    return l
+
+
+# Calculate link sizes from link loads
+def get_link_sizes(link_loads, links):
+    number_of_links = len(links)
+    y = [0] * number_of_links  # Init link sizes list with zeros
+    for e in range(len(links)):
+        y[e] = ceil(link_loads[e] / links[e].link_module)
+    return y
+
+
 # Check if given link is in a given demand path
 def check_link_in_demand(link, demand, path_num):
     demand_path = demand.list_of_demand_paths[path_num]
     return str(link) in demand_path.link_id_list
-
-
-# Check if possibility is in range between 0 and 1
-def check_probability(probability: float, default: float):
-    if not 0 <= probability <= 1:
-        return default
-    else:
-        return probability
 
 
 def get_random_bool(probability: float):
