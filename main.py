@@ -6,6 +6,7 @@ import EvolutionaryAlgorithm
 import time
 import random
 from Classes import Chromosome
+import sys
 
 # DAP: find allocation of path flows that minimizes the max load function.
 # link capacity = link module * number of modules
@@ -148,7 +149,20 @@ with open(network, "r") as network_file:
     current_fitness = 0
     best_fitness = 0
 
+    x = 0
+    loading = "."
     while check_if_stop(time_elapsed, generations_counter, mutations_counter, not_improved_counter):
+        # Loading animation
+        x += 1
+        x %= 50
+        if x > 0:
+            loading += "."
+        else:
+            loading = "."
+        sys.stdout.write("\r" + loading)
+        sys.stdout.flush()
+        # end loading animation
+
         # Pick which fitness to prioritise based on chosen algorithm, then recalc the relevant parameters
         if EvolutionaryAlgorithm.algorithm == "DDAP":
             current_ddap = current_population[0].fitness_ddap
