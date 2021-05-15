@@ -87,21 +87,23 @@ def mutate_chromosome(chromosome: Chromosome, mutation_probability: float):
 def crossover_chromosomes(original_population, biggest_fitness: float, multiplier: float):
     # Firstly, list is filled with parent chromosomes
     new_population = list(original_population)
+    population_size = len(original_population)
+    for j in range(0, population_size):
+        first_parent_id = random.randint(0, population_size - 1)
+        second_parent_id = random.randint(0, population_size - 1)
 
-    # Remove 2 parents from the original population until less than 2 left
-    while len(original_population) >= 2:
+        first_parent = original_population[first_parent_id]
+        second_parent = original_population[second_parent_id]
+
         if algorithm == "DDAP":
-            first_parent_score = original_population[0].fitness_ddap
-            second_parent_score = original_population[1].fitness_ddap
+            first_parent_score = first_parent.fitness_ddap
+            second_parent_score = second_parent.fitness_ddap
         else:
-            first_parent_score = original_population[0].fitness_dap
-            second_parent_score = original_population[1].fitness_dap
+            first_parent_score = first_parent.fitness_dap
+            second_parent_score = second_parent.fitness_dap
 
         first_parent_score = first_parent_score/biggest_fitness*multiplier
         second_parent_score = second_parent_score/biggest_fitness*multiplier
-
-        first_parent_genes = original_population.pop(0).list_of_genes
-        second_parent_genes = original_population.pop(0).list_of_genes
 
         # Crossover prob. is determined by parents' fitness
         crossover_probability = (second_parent_score+first_parent_score)/2
@@ -109,6 +111,9 @@ def crossover_chromosomes(original_population, biggest_fitness: float, multiplie
             crossover_probability = 1.0
 
         if get_random_bool(crossover_probability):
+            first_parent_genes = first_parent.list_of_genes
+            second_parent_genes = first_parent.list_of_genes
+
             first_offspring_genes = list()
             second_offspring_genes = list()
 
