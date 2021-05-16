@@ -17,7 +17,7 @@ def get_links(network_file):
             start_node=int(link[0]),
             end_node=int(link[1]),
             number_of_modules=int(link[2]),
-            module_cost=int(link[3]),
+            unit_cost=int(link[3]),
             link_module=int(link[4]))
         #link_obj.print()
         links.append(link_obj)
