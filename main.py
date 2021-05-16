@@ -1,7 +1,7 @@
 import math
 from matplotlib import pyplot
 from Result import Result
-import oast_parser
+import OastParser
 import EvolutionaryAlgorithm
 import time
 import random
@@ -23,9 +23,9 @@ import sys
 
 # init algorithm parameters
 not_improved_in_N_generations = 0
-initial_population_size = 25
-mutation_probability = 0.05
-crossover_probability_mul = 1.0
+initial_population_size = 100
+mutation_probability = 0.75
+crossover_probability_mul = 1
 seed = 97492493748
 random.seed(seed)
 
@@ -33,7 +33,7 @@ EvolutionaryAlgorithm.algorithm = "DDAP"
 network = "nets/net12_2.txt"
 stop_input = "2"
 max_number_of_seconds = 15
-max_number_of_generations = 300
+max_number_of_generations = 800
 max_number_of_mutations = 100
 max_unimproved_generations = 10
 
@@ -129,8 +129,8 @@ with open(network, "r") as network_file:
     start_time = time.time()
 
     # Get parameters from file
-    links_list = oast_parser.get_links(network)
-    demand_list = oast_parser.get_demands(network)
+    links_list = OastParser.get_links(network)
+    demand_list = OastParser.get_demands(network)
 
     # Init population
     current_population = EvolutionaryAlgorithm.generate_first_population(demand_list, initial_population_size)
