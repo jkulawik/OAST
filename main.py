@@ -23,14 +23,14 @@ import sys
 
 # init algorithm parameters
 not_improved_in_N_generations = 0
-initial_population_size = 100
-mutation_probability = 0.75
-crossover_probability_mul = 1
-seed = 97492493748
+initial_population_size = 25
+mutation_probability = 0.1
+crossover_probability_mul = 1.0
+seed = 957495724
 random.seed(seed)
 
 EvolutionaryAlgorithm.algorithm = "DDAP"
-network = "nets/net12_2.txt"
+network = "nets/net12_1.txt"
 stop_input = "2"
 max_number_of_seconds = 15
 max_number_of_generations = 800
