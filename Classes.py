@@ -2,11 +2,11 @@
 
 class Link:
 
-    def __init__(self, start_node, end_node, number_of_modules, module_cost, link_module):
+    def __init__(self, start_node, end_node, number_of_modules, unit_cost, link_module):
         self.start_node = start_node  # ID int
         self.end_node = end_node  # ID int
         self.number_of_modules = number_of_modules  # int; number of modules installed on link
-        self.module_cost = module_cost  # int
+        self.unit_cost = unit_cost  # int
         self.link_module = link_module  # int (in demand units, e.g. Mbps)
 
     # Debug
@@ -15,7 +15,7 @@ class Link:
               .format(self.start_node,
                       self.end_node,
                       self.number_of_modules,
-                      self.module_cost,
+                      self.unit_cost,
                       self.link_module))
 
 

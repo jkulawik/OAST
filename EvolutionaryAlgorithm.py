@@ -157,8 +157,9 @@ def calculate_fitness(links, demands, population):
         # Now calculate the fitness (objective function value) for both DAP and DDAP:
         for e in range(len(links)):
             y[e] = ceil(l[e]/links[e].link_module)  # Calc link sizes
-            f[e] = l[e] - links[e].number_of_modules*links[e].module_cost  # Calc link overloads
-            chromosome.fitness_ddap += y[e] * links[e].module_cost
+            chromosome.fitness_ddap += y[e] * links[e].unit_cost
+            f[e] = l[e] - links[e].number_of_modules*links[e].link_module  # Calc link overloads
+
         chromosome.fitness_dap = max(f)
 
 
