@@ -1,0 +1,21 @@
+Network:					nets/net4.txt
+Seed:						97492493748
+Generations:				301
+Time elapsed:				4.559999942779541
+Initial population size:	25
+Mutation probability:		0.25
+Crossover prob. mult.:		1.0
+Best DDAP fitness:			inf
+Best DAP fitness:			-136
+
+Best chromosome:
+Demand 1: [1, 1, 1]
+Demand 2: [1, 2, 1]
+Demand 3: [3, 2]
+Demand 4: [1, 1, 0]
+Demand 5: [0, 2, 1]
+Demand 6: [1, 0, 3]
+Link loads ("number of signals"):
+[12, 10, 6, 8, 8]
+Link sizes ("number of fibers"):
+[6, 5, 3, 4, 4]
